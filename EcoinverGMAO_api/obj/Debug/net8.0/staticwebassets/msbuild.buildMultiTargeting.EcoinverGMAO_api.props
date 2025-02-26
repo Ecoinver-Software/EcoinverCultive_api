@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\EcoinverGMAO_api.props" />
+</Project>
