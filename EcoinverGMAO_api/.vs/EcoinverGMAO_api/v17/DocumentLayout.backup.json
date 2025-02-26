@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{07A55E77-3B3D-45E5-AC02-FD0EF2EA655C}|EcoinverGMAO_api.csproj|c:\\users\\usuario\\documents\\github\\ecoinvergmao_api\\ecoinvergmao_api\\seeders\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{07A55E77-3B3D-45E5-AC02-FD0EF2EA655C}|EcoinverGMAO_api.csproj|solutionrelative:seeders\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{07A55E77-3B3D-45E5-AC02-FD0EF2EA655C}|EcoinverGMAO_api.csproj|c:\\users\\usuario\\documents\\github\\ecoinvergmao_api\\ecoinvergmao_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{07A55E77-3B3D-45E5-AC02-FD0EF2EA655C}|EcoinverGMAO_api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -31,6 +35,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "DataSeeder.cs",
+              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\Seeders\\DataSeeder.cs",
+              "RelativeDocumentMoniker": "Seeders\\DataSeeder.cs",
+              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\Seeders\\DataSeeder.cs",
+              "RelativeToolTip": "Seeders\\DataSeeder.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAgwCcAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-26T14:40:36.145Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -38,12 +55,11 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-26T14:39:11.228Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-26T14:39:11.228Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Exceptions.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\Utils\\Exceptions.cs",
               "RelativeDocumentMoniker": "Utils\\Exceptions.cs",
@@ -51,12 +67,11 @@
               "RelativeToolTip": "Utils\\Exceptions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-26T14:37:31.213Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-26T14:37:31.213Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AuthService.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "Services\\AuthService.cs",
@@ -64,12 +79,11 @@
               "RelativeToolTip": "Services\\AuthService.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAIwCEAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-26T14:17:19.22Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-26T14:17:19.22Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\EcoinverGMAO_api\\EcoinverGMAO_api\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
@@ -77,8 +91,7 @@
               "RelativeToolTip": "Controllers\\AuthController.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwCMAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-26T14:01:18.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-26T14:01:18.288Z"
             }
           ]
         }

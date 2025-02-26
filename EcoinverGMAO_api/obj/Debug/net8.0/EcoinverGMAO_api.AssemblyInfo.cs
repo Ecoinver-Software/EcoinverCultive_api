@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EcoinverGMAO_api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aec926d9a747d55d8e6c496d6b0dd12967ff5f13")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d73ee76c4773200d13497b3bf831096186c7312c")]
 [assembly: System.Reflection.AssemblyProductAttribute("EcoinverGMAO_api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EcoinverGMAO_api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
