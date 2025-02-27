@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EcoinverGMAO_api.Models
 {
-    public class Company : BaseModel
+    public class Center : BaseModel
     {
         [Required]
         [MaxLength(200)]
@@ -15,15 +16,10 @@ namespace EcoinverGMAO_api.Models
         [MaxLength(300)]
         public string? Address { get; set; }
 
-        [MaxLength(50)]
-        public string? Phone { get; set; }
-
-        [MaxLength(100)]
-        [EmailAddress]
-        public string? Email { get; set; }
-
         [Required]
-        [MaxLength(20)]
-        public string CIF { get; set; }
+        public int CompanyId { get; set; }
+
+        [ForeignKey("CompanyId")]
+        public Company Company { get; set; }
     }
 }

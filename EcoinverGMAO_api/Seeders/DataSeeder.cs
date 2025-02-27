@@ -91,7 +91,7 @@ namespace EcoinverGMAO_api.Seeders
                 }
             }
 
-            // 2. Crear el usuario administrador si no existe
+            //  Crear el usuario administrador si no existe
             var adminUser = await userManager.FindByNameAsync(adminUserName);
             if (adminUser == null)
             {

@@ -1,5 +1,7 @@
 using System.Text;
+using EcoinverGMAO_api.Data;
 using EcoinverGMAO_api.Models.Identity;
+using EcoinverGMAO_api.Profiles;
 using EcoinverGMAO_api.Seeders;
 using EcoinverGMAO_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,7 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 builder.Services.AddDbContext<AppDbContext>(o =>
 {
@@ -26,7 +30,7 @@ builder.Services.AddIdentity<User, Role>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequiredLength = 4;          // Por ejemplo, mínimo 4 caracteres
+    options.Password.RequiredLength = 4;          // PWD mínimo 4 caracteres 
     options.Password.RequireNonAlphanumeric = false; // No se requiere un carácter especial
     options.Password.RequireLowercase = false;       // No se requiere minúsculas
     options.Password.RequireUppercase = false;       // No se requiere mayúsculas
@@ -53,6 +57,10 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
     };
 });
+
+
+// MAPPERS MODEL DTO
+builder.Services.AddAutoMapper(typeof(CompanyProfile));
 
 builder.Services.AddAuthorization();
 
