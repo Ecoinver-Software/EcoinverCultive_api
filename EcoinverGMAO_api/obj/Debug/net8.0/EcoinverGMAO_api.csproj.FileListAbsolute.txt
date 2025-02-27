@@ -116,3 +116,5 @@ C:\Users\Usuario\Documents\GitHub\EcoinverGMAO_api\EcoinverGMAO_api\obj\Debug\ne
 C:\Users\Usuario\Documents\GitHub\EcoinverGMAO_api\EcoinverGMAO_api\obj\Debug\net8.0\EcoinverGMAO_api.genruntimeconfig.cache
 C:\Users\Usuario\Documents\GitHub\EcoinverGMAO_api\EcoinverGMAO_api\obj\Debug\net8.0\ref\EcoinverGMAO_api.dll
 C:\Users\Usuario\Documents\GitHub\EcoinverGMAO_api\EcoinverGMAO_api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Usuario\Documents\GitHub\EcoinverGMAO_api\EcoinverGMAO_api\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\Usuario\Documents\GitHub\EcoinverGMAO_api\EcoinverGMAO_api\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

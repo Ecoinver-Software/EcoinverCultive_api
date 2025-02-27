@@ -14,5 +14,84 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EcoinverGMAO_api.Controllers.CompaniesController",
+    "Method": "GetAll",
+    "RelativePath": "api/company",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EcoinverGMAO_api.Controllers.CompaniesController",
+    "Method": "Create",
+    "RelativePath": "api/company",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EcoinverGMAO_api.Models.Dto.CreateCompanyDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EcoinverGMAO_api.Controllers.CompaniesController",
+    "Method": "GetById",
+    "RelativePath": "api/company/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EcoinverGMAO_api.Controllers.CompaniesController",
+    "Method": "Update",
+    "RelativePath": "api/company/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "EcoinverGMAO_api.Models.Dto.UpdateCompanyDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EcoinverGMAO_api.Controllers.CompaniesController",
+    "Method": "Delete",
+    "RelativePath": "api/company/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
