@@ -18,6 +18,8 @@ namespace EcoinverGMAO_api.Seeders
             string reporterRoleName = "Reportador";
             string technicalRoleName = "Tecnico";
             string adminUserName = "admin";
+            string tecnicoUserName = "tecnico";
+            string reporterUserName = "reportador";
 
             //Crear el rol de SuperAdministrador si no existe
             if (!await roleManager.RoleExistsAsync(superAdminRoleName))
@@ -119,6 +121,61 @@ namespace EcoinverGMAO_api.Seeders
                         string.Join(", ", addToRoleResult.Errors));
                 }
             }
+            var tecnicoUser = await userManager.FindByNameAsync(tecnicoUserName);
+            if (tecnicoUser == null)
+            {
+                tecnicoUser = new User
+                {
+                    UserName = tecnicoUserName,
+                    Email = "tecnico@example.com",
+                    NombreCompleto = "Tecnico",
+                    EmailConfirmed = true
+                };
+
+                // Crea el usuario con la contraseña "1234"
+                var userResult = await userManager.CreateAsync(tecnicoUser, "1234");
+                if (!userResult.Succeeded)
+                {
+                    throw new Exception("Error al crear el usuario tecnico: " +
+                        string.Join(", ", userResult.Errors));
+                }
+
+                // Asigna el rol de administrador al usuario creado
+                var addToRoleResult = await userManager.AddToRoleAsync(tecnicoUser, technicalRoleName);
+                if (!addToRoleResult.Succeeded)
+                {
+                    throw new Exception("Error al asignar el rol de administrador: " +
+                        string.Join(", ", addToRoleResult.Errors));
+                }
+            }
+            var reporterUser = await userManager.FindByNameAsync(reporterUserName);
+            if (reporterUser == null)
+            {
+                reporterUser = new User
+                {
+                    UserName = reporterUserName,
+                    Email = "reporter@example.com",
+                    NombreCompleto = "Reporter",
+                    EmailConfirmed = true
+                };
+
+                // Crea el usuario con la contraseña "1234"
+                var userResult = await userManager.CreateAsync(reporterUser, "1234");
+                if (!userResult.Succeeded)
+                {
+                    throw new Exception("Error al crear el usuario reporter: " +
+                        string.Join(", ", userResult.Errors));
+                }
+
+                // Asigna el rol de reporter al usuario creado
+                var addToRoleResult = await userManager.AddToRoleAsync(reporterUser, reporterRoleName);
+                if (!addToRoleResult.Succeeded)
+                {
+                    throw new Exception("Error al asignar el rol de reporter: " +
+                        string.Join(", ", addToRoleResult.Errors));
+                }
+            }
+
         }
     }
 }
