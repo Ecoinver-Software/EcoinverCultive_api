@@ -16,6 +16,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICommercialNeedsService, CommercialNeedsService>();
 
 builder.Services.AddDbContext<AppDbContext>(o =>
 {
@@ -64,6 +65,7 @@ builder.Services.AddAuthentication(options =>
 // MAPPERS MODEL DTO
 builder.Services.AddAutoMapper(typeof(CompanyProfile));
 builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(CommercialNeedsProfile));
 
 builder.Services.AddAuthorization();
 
