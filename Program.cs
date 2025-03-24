@@ -11,36 +11,45 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+// 1) Registro de servicios y configuración de dependencias
 
+// Repositorios genéricos y servicios
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ICommercialNeedsService, CommercialNeedsService>();
 
+// Servicio para leer la base del ERP por ADO.NET
+builder.Services.AddTransient<ErpDataService>();
+
+// DbContext principal de tu aplicación con MySQL (Pomelo)
 builder.Services.AddDbContext<AppDbContext>(o =>
 {
     o.UseMySql(
-    builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(8, 0, 40))
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 40))
     );
     o.EnableSensitiveDataLogging();
-}
-);
+});
+
+// Identity
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+// Opciones de Identity (contraseñas, etc.)
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequiredLength = 4;          // PWD mínimo 4 caracteres 
-    options.Password.RequireNonAlphanumeric = false; // No se requiere un carácter especial
-    options.Password.RequireLowercase = false;       // No se requiere minúsculas
-    options.Password.RequireUppercase = false;       // No se requiere mayúsculas
-    options.Password.RequireDigit = false;           // No se requiere dígito (si lo deseas)
+    options.Password.RequiredLength = 4;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
 });
 
-// JWT PARA EL TOKEN Y AUTH
+// JWT para el token
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,30 +66,32 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["Key"])
+        )
     };
 });
 
-
-// MAPPERS MODEL DTO
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(CompanyProfile));
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(CommercialNeedsProfile));
+builder.Services.AddAutoMapper(typeof(RoleProfile));
 
+// Autorización
 builder.Services.AddAuthorization();
 
-// Add services to the container.
-
+// Controladores y Swagger
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//CORS
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Origen de tu aplicación cliente
+        policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -88,6 +99,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// 2) Seeding de datos iniciales (si corresponde)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -101,7 +113,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
+// 3) Middlewares y configuración del pipeline
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -110,10 +123,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Usar CORS
 app.UseCors("AllowAngularDev");
 
+// **Importante**: primero autenticación, luego autorización
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+// 4) Run
 app.Run();
