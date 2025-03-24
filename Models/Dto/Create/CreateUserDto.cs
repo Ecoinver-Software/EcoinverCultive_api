@@ -1,12 +1,14 @@
 ﻿namespace EcoinverGMAO_api.Models.Dto
 {
-    public class CreateCompanyDto
+    public class CreateUserDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
-        public string CIF { get; set; }
+        public string NombreCompleto { get; set; }
+        public string Password { get; set; }
+        /// <summary>
+        /// Rol único que tendrá este usuario.
+        /// </summary>
+        public string Role { get; set; }
     }
 }

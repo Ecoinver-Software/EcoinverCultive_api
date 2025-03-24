@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using EcoinverGMAO_api.Models;
 
 namespace EcoinverGMAO_api.Models.Identity
 {
@@ -7,8 +6,8 @@ namespace EcoinverGMAO_api.Models.Identity
     {
         public string NombreCompleto { get; set; }
 
-        public int? JobPositionId { get; set; }
-
-        public JobPosition JobPosition { get; set; }
+        // Ejemplo de cómo ignorar el hash si llegases a retornar "User" sin mapearlo
+        // [JsonIgnore]
+        // public override string PasswordHash { get; set; }
     }
 }

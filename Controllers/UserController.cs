@@ -1,201 +1,186 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EcoinverGMAO_api.Models.Dto;
 using EcoinverGMAO_api.Models.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using EcoinverGMAO_api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace EcoinverGMAO_api.Controllers
 {
     [ApiController]
-    [Route("api/users")]
-    // [Authorize]
-
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
+        private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly ILogger<UsersController> _logger;
 
         public UsersController(
+            IUserService userService,
             UserManager<User> userManager,
-            RoleManager<Role> roleManager,
             ILogger<UsersController> logger)
         {
+            _userService = userService;
             _userManager = userManager;
-            _roleManager = roleManager;
             _logger = logger;
         }
-        // 4) GET: api/users
+
+        /// <summary>
+        /// Obtiene la lista de usuarios, mostrando solo DTOs (sin exponer contraseñas ni hashes).
+        /// </summary>
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var users = _userManager.Users.ToList();
-            return Ok(users);
+            var users = await _userService.GetAllUsersAsync();
+            var userDtos = new List<UserDto>();
+
+            foreach (var user in users)
+            {
+                // Como solo hay un rol por usuario, tomamos el primero de la lista.
+                var roles = await _userManager.GetRolesAsync(user);
+                var singleRole = roles.FirstOrDefault() ?? string.Empty;
+
+                userDtos.Add(new UserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    NombreCompleto = user.NombreCompleto,
+                    Role = singleRole
+                });
+            }
+
+            return Ok(userDtos);
         }
-        // 1) POST: api/users/create
+
+        /// <summary>
+        /// Crea un usuario nuevo con un rol único.
+        /// </summary>
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            // Verifica si ya existe un usuario con ese nombre
-            var existingUser = await _userManager.FindByNameAsync(createUserDto.Username);
-            if (existingUser != null)
+            try
             {
-                return BadRequest(new { message = "El usuario ya existe." });
-            }
+                var user = await _userService.CreateUserAsync(createUserDto);
 
-            var newUser = new User
-            {
-                UserName = createUserDto.Username,
-                Email = createUserDto.Email,
-                NombreCompleto = createUserDto.NombreCompleto,
-                EmailConfirmed = true
-            };
-
-            // Crea el usuario con la contraseña proporcionada
-            var createResult = await _userManager.CreateAsync(newUser, createUserDto.Password);
-            if (!createResult.Succeeded)
-            {
-                _logger.LogError("Error al crear el usuario: {Errors}", string.Join(", ", createResult.Errors.Select(e => e.Description)));
-                return BadRequest(createResult.Errors);
-            }
-
-            // Asigna el rol único al usuario
-            if (!string.IsNullOrEmpty(createUserDto.Role))
-            {
-                if (await _roleManager.RoleExistsAsync(createUserDto.Role))
+                // Mapear a UserDto para devolverlo
+                var userDto = new UserDto
                 {
-                    var addRoleResult = await _userManager.AddToRoleAsync(newUser, createUserDto.Role);
-                    if (!addRoleResult.Succeeded)
-                    {
-                        _logger.LogError("Error al asignar el rol {Role} al usuario {User}: {Errors}",
-                            createUserDto.Role, newUser.UserName,
-                            string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
-                        return BadRequest(addRoleResult.Errors);
-                    }
-                }
-                else
-                {
-                    return BadRequest(new { message = $"El rol '{createUserDto.Role}' no existe." });
-                }
-            }
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    NombreCompleto = user.NombreCompleto,
+                    // Si quieres confirmar el rol asignado, podrías volver a pedirlo:
+                    Role = string.IsNullOrEmpty(createUserDto.Role)
+                                ? string.Empty
+                                : createUserDto.Role
+                };
 
-            return Ok(new { message = "Usuario creado exitosamente." });
+                return Ok(new
+                {
+                    message = "Usuario creado exitosamente.",
+                    user = userDto
+                });
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear usuario");
+                return BadRequest(new { message = ex.Message });
+            }
         }
-        // 5) GET: api/users/{id}
+
+        /// <summary>
+        /// Obtiene un usuario por Id.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound(new { message = "Usuario no encontrado." });
+                var user = await _userService.GetUserByIdAsync(id);
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var singleRole = roles.FirstOrDefault() ?? string.Empty;
+
+                var userDto = new UserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    NombreCompleto = user.NombreCompleto,
+                    Role = singleRole
+                };
+
+                return Ok(userDto);
             }
-            return Ok(user);
+            catch (System.Exception ex)
+            {
+                _logger.LogWarning(ex, "Error al obtener usuario por ID");
+                return NotFound(new { message = ex.Message });
+            }
         }
-        // 2) PUT: api/users/{id}
+
+        /// <summary>
+        /// Actualiza un usuario existente (email, nombre, contraseña, rol único).
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateUserDto updateUserDto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound(new { message = "Usuario no encontrado." });
+                var user = await _userService.UpdateUserAsync(id, updateUserDto);
+
+                // Obtenemos el rol único actualizado
+                var roles = await _userManager.GetRolesAsync(user);
+                var singleRole = roles.FirstOrDefault() ?? string.Empty;
+
+                var userDto = new UserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    NombreCompleto = user.NombreCompleto,
+                    Role = singleRole
+                };
+
+                return Ok(new
+                {
+                    message = "Usuario actualizado exitosamente.",
+                    user = userDto
+                });
             }
-
-            // Actualiza los campos permitidos
-            user.Email = updateUserDto.Email ?? user.Email;
-            user.NombreCompleto = updateUserDto.NombreCompleto ?? user.NombreCompleto;
-
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded)
+            catch (System.Exception ex)
             {
-                _logger.LogError("Error al actualizar el usuario: {Errors}",
-                    string.Join(", ", updateResult.Errors.Select(e => e.Description)));
-                return BadRequest(updateResult.Errors);
+                _logger.LogError(ex, "Error al actualizar usuario");
+                return BadRequest(new { message = ex.Message });
             }
-
-            // Actualiza la contraseña si se ha enviado
-            if (!string.IsNullOrEmpty(updateUserDto.Password))
-            {
-                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var passwordResult = await _userManager.ResetPasswordAsync(user, resetToken, updateUserDto.Password);
-                if (!passwordResult.Succeeded)
-                {
-                    _logger.LogError("Error al actualizar la contraseña: {Errors}",
-                        string.Join(", ", passwordResult.Errors.Select(e => e.Description)));
-                    return BadRequest(passwordResult.Errors);
-                }
-            }
-
-            // Actualiza el rol si se especifica
-            if (!string.IsNullOrEmpty(updateUserDto.Role))
-            {
-                // Obtiene el rol actual (se asume que el usuario solo tiene uno)
-                var currentRoles = await _userManager.GetRolesAsync(user);
-                // Elimina el rol actual, si existe
-                if (currentRoles.Any())
-                {
-                    var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
-                    if (!removeResult.Succeeded)
-                    {
-                        _logger.LogError("Error al eliminar roles actuales del usuario {User}: {Errors}",
-                            user.UserName, string.Join(", ", removeResult.Errors.Select(e => e.Description)));
-                        return BadRequest(removeResult.Errors);
-                    }
-                }
-                // Asigna el nuevo rol
-                if (await _roleManager.RoleExistsAsync(updateUserDto.Role))
-                {
-                    var addRoleResult = await _userManager.AddToRoleAsync(user, updateUserDto.Role);
-                    if (!addRoleResult.Succeeded)
-                    {
-                        _logger.LogError("Error al asignar el nuevo rol {Role} al usuario {User}: {Errors}",
-                            updateUserDto.Role, user.UserName,
-                            string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
-                        return BadRequest(addRoleResult.Errors);
-                    }
-                }
-                else
-                {
-                    return BadRequest(new { message = $"El rol '{updateUserDto.Role}' no existe." });
-                }
-            }
-
-            return Ok(new { message = "Usuario actualizado exitosamente." });
         }
 
-        // 3) DELETE: api/users/{id}
+        /// <summary>
+        /// Elimina un usuario por Id.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound(new { message = "Usuario no encontrado." });
+                await _userService.DeleteUserAsync(id);
+                return Ok(new { message = "Usuario eliminado exitosamente." });
             }
-
-            var deleteResult = await _userManager.DeleteAsync(user);
-            if (!deleteResult.Succeeded)
+            catch (System.Exception ex)
             {
-                _logger.LogError("Error al eliminar el usuario: {Errors}",
-                    string.Join(", ", deleteResult.Errors.Select(e => e.Description)));
-                return BadRequest(deleteResult.Errors);
+                _logger.LogError(ex, "Error al eliminar usuario");
+                return BadRequest(new { message = ex.Message });
             }
-
-            return Ok(new { message = "Usuario eliminado exitosamente." });
         }
     }
 }

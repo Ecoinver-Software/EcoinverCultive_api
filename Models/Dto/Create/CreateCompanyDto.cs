@@ -2,7 +2,7 @@
 
 namespace EcoinverGMAO_api.Models.Dto
 {
-    public class CreateUserDto
+    public class CreateCompanyDto
     {
         [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
         public string Username { get; set; }

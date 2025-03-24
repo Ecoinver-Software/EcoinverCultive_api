@@ -10,8 +10,8 @@ namespace EcoinverGMAO_api.Services
 {
     public interface IUserService
     {
-        Task CreateUserAsync(CreateUserDto dto);
-        Task UpdateUserAsync(string id, UpdateUserDto dto);
+        Task<User> CreateUserAsync(CreateUserDto dto);
+        Task<User> UpdateUserAsync(string id, UpdateUserDto dto);
         Task<User> GetUserByIdAsync(string id);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task DeleteUserAsync(string id);
@@ -28,7 +28,7 @@ namespace EcoinverGMAO_api.Services
             _roleManager = roleManager;
         }
 
-        public async Task CreateUserAsync(CreateUserDto dto)
+        public async Task<User> CreateUserAsync(CreateUserDto dto)
         {
             // Verificar si el usuario ya existe
             var existingUser = await _userManager.FindByNameAsync(dto.Username);
@@ -46,11 +46,11 @@ namespace EcoinverGMAO_api.Services
             };
 
             // Crear el usuario con la contraseña indicada
-            var result = await _userManager.CreateAsync(user, dto.Password);
-            if (!result.Succeeded)
+            var createResult = await _userManager.CreateAsync(user, dto.Password);
+            if (!createResult.Succeeded)
             {
-                throw new Exception("Error al crear el usuario: " +
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+                throw new Exception($"Error al crear el usuario: {errors}");
             }
 
             // Asignar el rol único si se especifica
@@ -61,8 +61,8 @@ namespace EcoinverGMAO_api.Services
                     var addRoleResult = await _userManager.AddToRoleAsync(user, dto.Role);
                     if (!addRoleResult.Succeeded)
                     {
-                        throw new Exception("Error al asignar el rol: " +
-                            string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                        var errors = string.Join(", ", addRoleResult.Errors.Select(e => e.Description));
+                        throw new Exception($"Error al asignar el rol: {errors}");
                     }
                 }
                 else
@@ -70,9 +70,11 @@ namespace EcoinverGMAO_api.Services
                     throw new Exception($"El rol '{dto.Role}' no existe.");
                 }
             }
+
+            return user;
         }
 
-        public async Task UpdateUserAsync(string id, UpdateUserDto dto)
+        public async Task<User> UpdateUserAsync(string id, UpdateUserDto dto)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -81,50 +83,54 @@ namespace EcoinverGMAO_api.Services
             }
 
             // Actualizar campos básicos
-            user.Email = dto.Email ?? user.Email;
-            user.NombreCompleto = dto.NombreCompleto ?? user.NombreCompleto;
+            if (!string.IsNullOrEmpty(dto.Email))
+                user.Email = dto.Email;
+
+            if (!string.IsNullOrEmpty(dto.NombreCompleto))
+                user.NombreCompleto = dto.NombreCompleto;
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
-                throw new Exception("Error al actualizar el usuario: " +
-                    string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+                var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
+                throw new Exception($"Error al actualizar el usuario: {errors}");
             }
 
-            // Actualizar la contraseña si se proporciona una nueva
+            // Actualizar la contraseña si se proporciona
             if (!string.IsNullOrEmpty(dto.Password))
             {
                 var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var passwordResult = await _userManager.ResetPasswordAsync(user, resetToken, dto.Password);
                 if (!passwordResult.Succeeded)
                 {
-                    throw new Exception("Error al actualizar la contraseña: " +
-                        string.Join(", ", passwordResult.Errors.Select(e => e.Description)));
+                    var errors = string.Join(", ", passwordResult.Errors.Select(e => e.Description));
+                    throw new Exception($"Error al actualizar la contraseña: {errors}");
                 }
             }
 
-            // Actualizar el rol
+            // Actualizar el rol (asumiendo un único rol por usuario)
             if (!string.IsNullOrEmpty(dto.Role))
             {
-                // Se asume que el usuario solo tiene un rol
+                // Eliminar el rol actual si existe
                 var currentRoles = await _userManager.GetRolesAsync(user);
                 if (currentRoles.Any())
                 {
                     var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
                     if (!removeResult.Succeeded)
                     {
-                        throw new Exception("Error al eliminar el rol actual: " +
-                            string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+                        var errors = string.Join(", ", removeResult.Errors.Select(e => e.Description));
+                        throw new Exception($"Error al eliminar roles actuales: {errors}");
                     }
                 }
 
+                // Asignar el nuevo rol
                 if (await _roleManager.RoleExistsAsync(dto.Role))
                 {
                     var addRoleResult = await _userManager.AddToRoleAsync(user, dto.Role);
                     if (!addRoleResult.Succeeded)
                     {
-                        throw new Exception("Error al asignar el nuevo rol: " +
-                            string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                        var errors = string.Join(", ", addRoleResult.Errors.Select(e => e.Description));
+                        throw new Exception($"Error al asignar el nuevo rol: {errors}");
                     }
                 }
                 else
@@ -132,6 +138,8 @@ namespace EcoinverGMAO_api.Services
                     throw new Exception($"El rol '{dto.Role}' no existe.");
                 }
             }
+
+            return user;
         }
 
         public async Task<User> GetUserByIdAsync(string id)
@@ -146,6 +154,7 @@ namespace EcoinverGMAO_api.Services
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
+            // .Users es un IQueryable<User>, conviene usar ToListAsync/ToList si vas a iterar
             return _userManager.Users.ToList();
         }
 
@@ -160,8 +169,8 @@ namespace EcoinverGMAO_api.Services
             var deleteResult = await _userManager.DeleteAsync(user);
             if (!deleteResult.Succeeded)
             {
-                throw new Exception("Error al eliminar el usuario: " +
-                    string.Join(", ", deleteResult.Errors.Select(e => e.Description)));
+                var errors = string.Join(", ", deleteResult.Errors.Select(e => e.Description));
+                throw new Exception($"Error al eliminar el usuario: {errors}");
             }
         }
     }
