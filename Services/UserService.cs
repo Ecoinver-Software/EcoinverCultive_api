@@ -30,7 +30,7 @@ namespace EcoinverGMAO_api.Services
 
         public async Task<User> CreateUserAsync(CreateUserDto dto)
         {
-            // Verificar si el usuario ya existe
+            // Verificar si el usuario ya existe (por username)
             var existingUser = await _userManager.FindByNameAsync(dto.Username);
             if (existingUser != null)
             {
@@ -89,6 +89,7 @@ namespace EcoinverGMAO_api.Services
             if (!string.IsNullOrEmpty(dto.NombreCompleto))
                 user.NombreCompleto = dto.NombreCompleto;
 
+            // Guardar los cambios en el usuario
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
@@ -154,7 +155,8 @@ namespace EcoinverGMAO_api.Services
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            // .Users es un IQueryable<User>, conviene usar ToListAsync/ToList si vas a iterar
+            // .Users es un IQueryable<User>, conviene usar ToListAsync en vez de ToList() si quieres async real.
+            // Pero ToList() es suficiente si no son muchos registros.
             return _userManager.Users.ToList();
         }
 
