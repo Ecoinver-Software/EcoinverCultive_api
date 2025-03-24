@@ -9,7 +9,6 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
    
 
-    public DbSet<JobPosition> WorkerType { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<Center> Centers { get; set; }
     public DbSet<CommercialNeeds> CommercialNeeds { get; set; }
