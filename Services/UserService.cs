@@ -31,7 +31,7 @@ namespace EcoinverGMAO_api.Services
         public async Task<User> CreateUserAsync(CreateUserDto dto)
         {
             // Verificar si el usuario ya existe (por username)
-            var existingUser = await _userManager.FindByNameAsync(dto.Username);
+            var existingUser = await _userManager.FindByNameAsync(dto.UserName);
             if (existingUser != null)
             {
                 throw new Exception("El usuario ya existe.");
@@ -39,7 +39,7 @@ namespace EcoinverGMAO_api.Services
 
             var user = new User
             {
-                UserName = dto.Username,
+                UserName = dto.UserName,
                 Email = dto.Email,
                 NombreCompleto = dto.NombreCompleto,
                 EmailConfirmed = true
