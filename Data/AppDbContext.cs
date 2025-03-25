@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public DbSet<Center> Centers { get; set; }
     public DbSet<CommercialNeeds> CommercialNeeds { get; set; }
     public DbSet<Cultive> Cultives { get; set; }
+    public DbSet<Client> Clients { get; set; }
 
 
 }

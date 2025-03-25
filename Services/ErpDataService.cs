@@ -1,28 +1,33 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using MySqlConnector;
 using Microsoft.Extensions.Configuration;
 using EcoinverGMAO_api.Models.Dto;
 
 public class ErpDataService
 {
-    private readonly string _connectionString;
+    private readonly string _erpConnectionString;
+    private readonly string _netagroConnectionString;
 
     public ErpDataService(IConfiguration config)
     {
-        // Lee la conexión "ErpConnection" de appsettings.json
-        _connectionString = config.GetConnectionString("ErpConnection");
+        // Lee la conexión "ErpConnection" para cultivos
+        _erpConnectionString = config.GetConnectionString("ErpConnection");
+        // Lee la conexión "NetagroConnection" para clientes
+        _netagroConnectionString = config.GetConnectionString("NetagroConnection");
     }
 
     /// <summary>
-    /// Ejecuta la consulta a la DB del ERP para devolver cultivos activos,
-    /// filtrados por CUL_FechaLog > '2024-09-01', con varios LEFT JOINs.
+    /// Ejecuta la consulta a la base de datos del ERP para devolver cultivos activos,
+    /// filtrados por CUL_FechaLog > '2024-09-01' y con varios LEFT JOINs.
     /// </summary>
     /// <returns>Lista de cultivos listos para sincronizar (CultiveSyncDto).</returns>
     public List<CultiveSyncDto> GetCultivosSincronizados()
     {
         var cultivos = new List<CultiveSyncDto>();
 
-        using var conn = new MySqlConnection(_connectionString);
+        using var conn = new MySqlConnection(_erpConnectionString);
         conn.Open();
 
         using var cmd = conn.CreateCommand();
@@ -77,5 +82,36 @@ public class ErpDataService
         }
 
         return cultivos;
+    }
+
+    /// <summary>
+    /// Ejecuta una consulta en la base de datos NetagroComer para obtener los clientes activos.
+    /// </summary>
+    /// <returns>Lista de clientes listos para sincronizar (ClientSyncDto).</returns>
+    public List<ClientSyncDto> GetClientsSincronizados()
+    {
+        var clients = new List<ClientSyncDto>();
+
+        using var conn = new MySqlConnection(_netagroConnectionString);
+        conn.Open();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+           SELECT clientes.CLI_Idcliente, clientes.CLI_Nombre FROM clientes
+           WHERE clientes.CLI_bloqueo = 'N'
+        ";
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var client = new ClientSyncDto
+            {
+                ClientId = reader.GetInt32("CLI_Idcliente"),
+                Name = reader.IsDBNull(reader.GetOrdinal("CLI_Nombre")) ? null : reader.GetString("CLI_Nombre"),
+            };
+            clients.Add(client);
+        }
+
+        return clients;
     }
 }

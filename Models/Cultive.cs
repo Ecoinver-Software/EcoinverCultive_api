@@ -1,6 +1,6 @@
 ﻿namespace EcoinverGMAO_api.Models.Entities
 {
-    public class Cultive
+    public class Cultive : BaseModel
     {
         public int Id { get; set; } // Clave primaria autoincremental local
 

@@ -1,6 +1,6 @@
 ﻿namespace EcoinverGMAO_api.Models.Dto
 {
-    public class CultiveSyncDto : BaseModel
+    public class CultiveSyncDto 
     {
         public int IdCultivo { get; set; }
         public int? IdAgricultor { get; set; }
