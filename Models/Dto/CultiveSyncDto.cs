@@ -1,10 +1,8 @@
-﻿namespace EcoinverGMAO_api.Models.Entities
+﻿namespace EcoinverGMAO_api.Models.Dto
 {
-    public class Cultive
+    public class CultiveSyncDto : BaseModel
     {
-        public int Id { get; set; } // Clave primaria autoincremental local
-
-        public int IdCultivo { get; set; } // ID original del ERP
+        public int IdCultivo { get; set; }
         public int? IdAgricultor { get; set; }
         public string NombreAgricultor { get; set; }
         public int? IdFinca { get; set; }
