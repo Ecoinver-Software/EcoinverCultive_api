@@ -12,16 +12,18 @@ namespace EcoinverGMAO_api.Services
     public interface IAuthService
     {
         Task<LoginResponseDto> AuthenticateAsync(string username, string password);
-
     }
+
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager; // Inyectamos el RoleManager para roles personalizados
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<User> userManager, IConfiguration configuration)
+        public AuthService(UserManager<User> userManager, RoleManager<Role> roleManager, IConfiguration configuration)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _configuration = configuration;
         }
 
@@ -41,11 +43,20 @@ namespace EcoinverGMAO_api.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // Agregar roles del usuario a los claims (si existen)
+            // Agregar roles del usuario a los claims (si existen) y añadir el nivel de jerarquía
             var userRoles = await _userManager.GetRolesAsync(user);
-            foreach (var role in userRoles)
+            foreach (var roleName in userRoles)
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, role));
+                // Añadimos el claim del rol
+                authClaims.Add(new Claim(ClaimTypes.Role, roleName));
+
+                // Obtenemos la entidad del rol para extraer su nivel jerárquico
+                var roleEntity = await _roleManager.FindByNameAsync(roleName);
+                if (roleEntity != null)
+                {
+                    // Se añade el claim "RoleLevel" con el valor del nivel del rol
+                    authClaims.Add(new Claim("RoleLevel", roleEntity.Level.ToString()));
+                }
             }
 
             // Leer la configuración JWT
@@ -62,8 +73,7 @@ namespace EcoinverGMAO_api.Services
             );
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-
-            // Devolver el token y la fecha de expiración
+            // Devolver el token
             return new LoginResponseDto
             {
                 UserId = user.Id,
