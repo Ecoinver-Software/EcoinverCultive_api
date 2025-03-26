@@ -7,7 +7,7 @@ namespace EcoinverGMAO_api.Models.Dto
     {
         [Required(ErrorMessage = "El código del cliente es obligatorio.")]
         [MaxLength(100)]
-        public string ClientCode { get; set; }
+        public int ClientCode { get; set; }
 
         [Required(ErrorMessage = "El nombre del cliente es obligatorio.")]
         [MaxLength(200)]

@@ -6,8 +6,7 @@ namespace EcoinverGMAO_api.Models
     public class CommercialNeeds : BaseModel
     {
         [Required]
-        [MaxLength(100)]
-        public string ClientCode { get; set; }
+        public int ClientCode { get; set; }
 
         [Required]
         [MaxLength(200)]
