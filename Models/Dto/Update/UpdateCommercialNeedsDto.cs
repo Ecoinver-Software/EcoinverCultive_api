@@ -5,7 +5,6 @@ namespace EcoinverGMAO_api.Models.Dto
 {
     public class UpdateCommercialNeedsDto
     {
-        [MaxLength(100)]
         public int ClientCode { get; set; }
 
         [MaxLength(200)]
