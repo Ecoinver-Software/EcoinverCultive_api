@@ -21,6 +21,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ICommercialNeedsService, CommercialNeedsService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<ICultiveService, CultiveService>();
 
 // Servicio para leer la base del ERP por ADO.NET
 builder.Services.AddTransient<ErpDataService>();
@@ -79,6 +80,7 @@ builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(CommercialNeedsProfile));
 builder.Services.AddAutoMapper(typeof(RoleProfile));
 builder.Services.AddAutoMapper(typeof(ClientProfile));
+builder.Services.AddAutoMapper(typeof(CultiveProfile));
 
 // Autorización
 builder.Services.AddAuthorization();
