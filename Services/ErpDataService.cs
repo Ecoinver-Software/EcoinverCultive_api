@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using MySqlConnector;
 using Microsoft.Extensions.Configuration;
 using EcoinverGMAO_api.Models.Dto;
