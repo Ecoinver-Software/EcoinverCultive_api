@@ -88,7 +88,9 @@ namespace EcoinverGMAO_api.Services
 
             if (!string.IsNullOrEmpty(dto.NombreCompleto))
                 user.NombreCompleto = dto.NombreCompleto;
-
+            // Actualizar el UserName si se proporciona
+            if (!string.IsNullOrEmpty(dto.UserName))
+                user.UserName = dto.UserName;
             // Guardar los cambios en el usuario
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
