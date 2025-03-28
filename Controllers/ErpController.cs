@@ -140,5 +140,57 @@ namespace EcoinverGMAO_api.Controllers
                 Count = clientsFromErp.Count
             });
         }
+
+        // GET api/erp/generos
+        [HttpGet("genders")]
+        public async Task<IActionResult> GetGenerosAndSave()
+        {
+            // 1) Obtener géneros desde NetagroComer (ERP de géneros)
+            var generosFromErp = _erpDataService.GetGenerosSincronizados();
+            var idsEnErp = generosFromErp.Select(x => x.IdGenero).ToList();
+
+            // 2) Upsert para géneros: insertar o actualizar según corresponda
+            foreach (var dto in generosFromErp)
+            {
+                var existingGenero = await _dbContext.Gender
+                    .SingleOrDefaultAsync(g => g.IdGenero == dto.IdGenero);
+
+                if (existingGenero != null)
+                {
+                    // Actualizar propiedades
+                    existingGenero.NombreGenero = dto.NombreGenero;
+                    existingGenero.IdFamilia = dto.IdFamilia;
+                    existingGenero.NombreFamilia = dto.NombreFamilia;
+                }
+                else
+                {
+                    // Insertar nuevo registro
+                    var newGenero = new Gender
+                    {
+                        IdGenero = dto.IdGenero,
+                        NombreGenero = dto.NombreGenero,
+                        IdFamilia = dto.IdFamilia,
+                        NombreFamilia = dto.NombreFamilia
+                    };
+                    _dbContext.Gender.Add(newGenero);
+                }
+            }
+
+            // 3) (Opcional) Eliminar los géneros locales que ya no están en el ERP
+            var generosToRemove = _dbContext.Gender
+                .Where(g => !idsEnErp.Contains(g.IdGenero));
+            _dbContext.Gender.RemoveRange(generosToRemove);
+
+            // 4) Guardar cambios en la base de datos
+            await _dbContext.SaveChangesAsync();
+
+            // 5) Retornar respuesta
+            return Ok(new
+            {
+                Message = "Géneros sincronizados correctamente (Upsert).",
+                Count = generosFromErp.Count
+            });
+        }
+
     }
 }

@@ -113,4 +113,40 @@ public class ErpDataService
 
         return clients;
     }
+    public List<GenderSyncDto> GetGenerosSincronizados()
+    {
+        var generos = new List<GenderSyncDto>();
+
+        using var conn = new MySqlConnection(_netagroConnectionString);
+        conn.Open();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+        SELECT 
+            generos.GEN_IdGenero,
+            generos.GEN_NombreGenero,
+            familiasgeneros.FAG_idfamilia,
+            familiasgeneros.FAG_nombre
+        FROM generos
+        LEFT JOIN familiasgeneros
+          ON LEFT(generos.GEN_IdGenero, 2) = familiasgeneros.FAG_idfamilia;
+    ";
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var genero = new GenderSyncDto
+            {
+                IdGenero = reader.GetInt32(0),
+                NombreGenero = reader.IsDBNull(1) ? null : reader.GetString(1),
+                IdFamilia = reader.IsDBNull(2) ? null : reader.GetInt32(2).ToString(),
+                NombreFamilia = reader.IsDBNull(3) ? null : reader.GetString(3)
+            };
+            generos.Add(genero);
+        }
+
+        return generos;
+    }
+
+
 }
