@@ -17,5 +17,7 @@
         public double? ProduccionEstimada { get; set; }
         public DateTime? FechaSiembra { get; set; }
         public DateTime? FechaFin { get; set; }
+        public string Latitud { get; set; }
+        public string Longitud { get; set; }
     }
 }

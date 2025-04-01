@@ -21,6 +21,7 @@ namespace EcoinverGMAO_api.Controllers
         }
 
         // GET api/erp/cultives
+        // GET api/erp/cultives
         [HttpGet("cultives")]
         public async Task<IActionResult> GetCultivesAndSave()
         {
@@ -38,7 +39,7 @@ namespace EcoinverGMAO_api.Controllers
 
                 if (existingCultive != null)
                 {
-                    // Actualizar propiedades
+                    // Actualizar propiedades existentes
                     existingCultive.IdAgricultor = dto.IdAgricultor;
                     existingCultive.NombreAgricultor = dto.NombreAgricultor;
                     existingCultive.IdFinca = dto.IdFinca;
@@ -52,6 +53,9 @@ namespace EcoinverGMAO_api.Controllers
                     existingCultive.ProduccionEstimada = dto.ProduccionEstimada;
                     existingCultive.FechaSiembra = dto.FechaSiembra;
                     existingCultive.FechaFin = dto.FechaFin;
+                    // Actualizamos los nuevos campos
+                    existingCultive.Latitud = dto.Latitud;
+                    existingCultive.Longitud = dto.Longitud;
                 }
                 else
                 {
@@ -71,7 +75,10 @@ namespace EcoinverGMAO_api.Controllers
                         Superficie = dto.Superficie,
                         ProduccionEstimada = dto.ProduccionEstimada,
                         FechaSiembra = dto.FechaSiembra,
-                        FechaFin = dto.FechaFin
+                        FechaFin = dto.FechaFin,
+                        // Asignamos los nuevos campos
+                        Latitud = dto.Latitud,
+                        Longitud = dto.Longitud
                     };
                     _dbContext.Cultives.Add(newCultive);
                 }
@@ -92,6 +99,7 @@ namespace EcoinverGMAO_api.Controllers
                 Count = cultivesFromErp.Count
             });
         }
+
 
         // GET api/erp/clients
         [HttpGet("clients")]

@@ -1,6 +1,6 @@
 ﻿namespace EcoinverGMAO_api.Models.Dto
 {
-    public class CultiveSyncDto 
+    public class CultiveSyncDto
     {
         public int IdCultivo { get; set; }
         public int? IdAgricultor { get; set; }
@@ -16,5 +16,9 @@
         public double? ProduccionEstimada { get; set; }
         public DateTime? FechaSiembra { get; set; }
         public DateTime? FechaFin { get; set; }
+        // Nuevos campos
+        public string Latitud { get; set; }
+        public string Longitud { get; set; }
     }
+
 }
