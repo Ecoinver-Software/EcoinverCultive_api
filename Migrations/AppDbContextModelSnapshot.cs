@@ -82,13 +82,6 @@ namespace EcoinverGMAO_api.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("GeneroId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GeneroNombre")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -102,8 +95,6 @@ namespace EcoinverGMAO_api.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GeneroId");
 
                     b.ToTable("CommercialNeeds");
                 });
@@ -299,9 +290,6 @@ namespace EcoinverGMAO_api.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdGenero")
-                        .IsUnique();
 
                     b.ToTable("Gender");
                 });
@@ -520,18 +508,6 @@ namespace EcoinverGMAO_api.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("EcoinverGMAO_api.Models.CommercialNeeds", b =>
-                {
-                    b.HasOne("EcoinverGMAO_api.Models.Entities.Gender", "Genero")
-                        .WithMany("CommercialNeeds")
-                        .HasForeignKey("GeneroId")
-                        .HasPrincipalKey("IdGenero")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genero");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("EcoinverGMAO_api.Models.Identity.Role", null)
@@ -581,11 +557,6 @@ namespace EcoinverGMAO_api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Gender", b =>
-                {
-                    b.Navigation("CommercialNeeds");
                 });
 #pragma warning restore 612, 618
         }
