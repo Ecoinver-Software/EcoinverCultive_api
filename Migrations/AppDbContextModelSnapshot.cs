@@ -183,6 +183,44 @@ namespace EcoinverGMAO_api.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanning", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("IdCommercialNeed")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("Kgs")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("WeekNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CommercialNeedsPlanning");
+                });
+
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Cultive", b =>
                 {
                     b.Property<int>("Id")
