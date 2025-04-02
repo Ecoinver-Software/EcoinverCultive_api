@@ -10,5 +10,9 @@ namespace EcoinverGMAO_api.Models.Dto
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public decimal Kgs { get; set; }
+
+        // Campos para el género
+        public int IdGenero { get; set; }
+        public string NombreGenero { get; set; }
     }
 }

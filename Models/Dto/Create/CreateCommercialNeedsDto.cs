@@ -19,5 +19,13 @@ namespace EcoinverGMAO_api.Models.Dto
 
         [Required(ErrorMessage = "La cantidad en kgs es obligatoria.")]
         public decimal Kgs { get; set; }
+
+        // Campos para el género
+        [Required(ErrorMessage = "El Id del género es obligatorio.")]
+        public int IdGenero { get; set; }
+
+        [Required(ErrorMessage = "El nombre del género es obligatorio.")]
+        [MaxLength(200)]
+        public string NombreGenero { get; set; }
     }
 }

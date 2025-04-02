@@ -26,6 +26,11 @@ namespace EcoinverGMAO_api.Models
         [Required]
         public int IdGenero { get; set; }
 
+        // Nuevo campo solicitado para mostrar el nombre del género
+        [Required]
+        [MaxLength(200)]
+        public string NombreGenero { get; set; }
+
         // Definir la referencia de navegación (nav. property)
         [ForeignKey(nameof(IdGenero))]
         public virtual Gender Gender { get; set; }
