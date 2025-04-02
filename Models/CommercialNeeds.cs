@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using EcoinverGMAO_api.Models.Entities;
 
 namespace EcoinverGMAO_api.Models
 {
@@ -19,5 +21,13 @@ namespace EcoinverGMAO_api.Models
 
         [Required]
         public decimal Kgs { get; set; }
+
+        // Agregar la propiedad que actúa como llave foránea (FK)
+        [Required]
+        public int IdGenero { get; set; }
+
+        // Definir la referencia de navegación (nav. property)
+        [ForeignKey(nameof(IdGenero))]
+        public virtual Gender Gender { get; set; }
     }
 }
