@@ -17,6 +17,12 @@ namespace EcoinverGMAO_api.Models.Dto
 
         public DateTime? EndDate { get; set; }
 
+        [Required(ErrorMessage = "El ID del género es obligatorio.")]
+        public int GeneroId { get; set; }
+
+        [Required(ErrorMessage = "El nombre del género es obligatorio.")]
+        public string GeneroNombre { get; set; }
+
         [Required(ErrorMessage = "La cantidad en kgs es obligatoria.")]
         public decimal Kgs { get; set; }
     }

@@ -17,5 +17,21 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public DbSet<Client> Clients { get; set; }
     public DbSet<Gender> Gender { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
+        // Hacer que IdGenero en Gender sea único
+        modelBuilder.Entity<Gender>()
+            .HasIndex(g => g.IdGenero)
+            .IsUnique();
+
+        // Configurar la relación: CommercialNeeds.GeneroId -> Gender.IdGenero
+        modelBuilder.Entity<CommercialNeeds>()
+            .HasOne(cn => cn.Genero)
+            .WithMany(g => g.CommercialNeeds)
+            .HasForeignKey(cn => cn.GeneroId)
+            .HasPrincipalKey(g => g.IdGenero)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

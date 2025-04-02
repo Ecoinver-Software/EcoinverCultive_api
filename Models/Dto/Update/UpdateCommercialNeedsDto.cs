@@ -15,5 +15,11 @@ namespace EcoinverGMAO_api.Models.Dto
         public DateTime? EndDate { get; set; }
 
         public decimal? Kgs { get; set; }
+
+        
+        public int GeneroId { get; set; }
+
+       
+        public string GeneroNombre { get; set; }
     }
 }
