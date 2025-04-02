@@ -13,14 +13,14 @@ namespace EcoinverGMAO_api.Seeders
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
             // Definir nombres de roles y usuarios
-            string developerRoleName = "desarrollador";
-            string adminRoleName = "admin";
-            string technicalRoleName = "tecnico de campo";
-            string comercialRoleName = "comercial";
+            string developerRoleName = "Desarrollador";
+            string adminRoleName = "Admin";
+            string technicalRoleName = "Tecnico de campo";
+            string comercialRoleName = "Comercial";
 
-            string adminUserName = "admin";
-            string tecnicoUserName = "tecnico";
-            string comercialUserName = "comercial";
+            string adminUserName = "Admin";
+            string tecnicoUserName = "Tecnico";
+            string comercialUserName = "Comercial";
 
             // Crear el rol de desarrollador si no existe
             if (!await roleManager.RoleExistsAsync(developerRoleName))
