@@ -41,18 +41,7 @@ namespace EcoinverGMAO_api.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_CommercialNeeds_IdGenero",
-                table: "CommercialNeeds",
-                column: "IdGenero");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CommercialNeeds_Gender_IdGenero",
-                table: "CommercialNeeds",
-                column: "IdGenero",
-                principalTable: "Gender",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+         
         }
 
         /// <inheritdoc />

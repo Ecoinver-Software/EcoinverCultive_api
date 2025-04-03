@@ -23,15 +23,6 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
         // que IdentityDbContext hace internamente
         base.OnModelCreating(modelBuilder);
 
-        // Relación entre CommercialNeeds y Gender
-        modelBuilder.Entity<CommercialNeeds>(entity =>
-        {
-            entity.HasOne(c => c.Gender)
-                  .WithMany()
-                  .HasForeignKey(c => c.IdGenero)
-                  // Ajusta la acción de borrado según tu necesidad
-                  // (Restrict, Cascade, etc.)
-                  .OnDelete(DeleteBehavior.Restrict);
-        });
+        
     }
 }

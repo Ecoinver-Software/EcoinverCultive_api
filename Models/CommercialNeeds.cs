@@ -31,8 +31,7 @@ namespace EcoinverGMAO_api.Models
         [MaxLength(200)]
         public string NombreGenero { get; set; }
 
-        // Definir la referencia de navegación (nav. property)
-        [ForeignKey(nameof(IdGenero))]
-        public virtual Gender Gender { get; set; }
+        public virtual ICollection<CommercialNeedsPlanning> CommercialNeedsPlannings { get; set; }
+
     }
 }
