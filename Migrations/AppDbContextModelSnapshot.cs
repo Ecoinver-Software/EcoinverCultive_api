@@ -232,9 +232,6 @@ namespace EcoinverGMAO_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CommercialNeedsPlanningId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -264,7 +261,7 @@ namespace EcoinverGMAO_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommercialNeedsPlanningId");
+                    b.HasIndex("IdCommercialNeedsPlanning");
 
                     b.ToTable("CommercialNeedsPlanningDetails");
                 });
@@ -698,7 +695,7 @@ namespace EcoinverGMAO_api.Migrations
                 {
                     b.HasOne("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanning", "CommercialNeedsPlanning")
                         .WithMany()
-                        .HasForeignKey("CommercialNeedsPlanningId")
+                        .HasForeignKey("IdCommercialNeedsPlanning")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

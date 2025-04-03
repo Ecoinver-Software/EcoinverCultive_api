@@ -1,15 +1,18 @@
-﻿namespace EcoinverGMAO_api.Models.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EcoinverGMAO_api.Models.Entities
 {
     public class CommercialNeedsPlanningDetails : BaseModel
     {
-        public int IdCommercialNeedsPlanning { get; set; }  // Clave foránea
+        public int IdCommercialNeedsPlanning { get; set; }  // Clave foránea con tu nombre preferido
 
-        public double? Kilos { get; set; }                  // Kilos necesarios
-        public DateTime? FechaDesde { get; set; }           // Fecha de inicio
-        public DateTime? FechaHasta { get; set; }           // Fecha de fin
-        public int NumeroSemana { get; set; }               // Número de semana
+        public double? Kilos { get; set; }
+        public DateTime? FechaDesde { get; set; }
+        public DateTime? FechaHasta { get; set; }
+        public int NumeroSemana { get; set; }
 
-        // Propiedad de navegación (opcional pero recomendable si usas EF)
+        [ForeignKey("IdCommercialNeedsPlanning")]
         public virtual CommercialNeedsPlanning CommercialNeedsPlanning { get; set; }
     }
+
 }

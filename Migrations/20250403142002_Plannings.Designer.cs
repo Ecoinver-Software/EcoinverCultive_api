@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcoinverGMAO_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250403141458_Plannings")]
+    [Migration("20250403142002_Plannings")]
     partial class Plannings
     {
         /// <inheritdoc />
@@ -235,9 +235,6 @@ namespace EcoinverGMAO_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CommercialNeedsPlanningId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -267,7 +264,7 @@ namespace EcoinverGMAO_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommercialNeedsPlanningId");
+                    b.HasIndex("IdCommercialNeedsPlanning");
 
                     b.ToTable("CommercialNeedsPlanningDetails");
                 });
@@ -701,7 +698,7 @@ namespace EcoinverGMAO_api.Migrations
                 {
                     b.HasOne("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanning", "CommercialNeedsPlanning")
                         .WithMany()
-                        .HasForeignKey("CommercialNeedsPlanningId")
+                        .HasForeignKey("IdCommercialNeedsPlanning")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

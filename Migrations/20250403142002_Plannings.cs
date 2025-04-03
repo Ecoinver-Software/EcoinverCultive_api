@@ -36,7 +36,6 @@ namespace EcoinverGMAO_api.Migrations
                     FechaDesde = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     FechaHasta = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     NumeroSemana = table.Column<int>(type: "int", nullable: false),
-                    CommercialNeedsPlanningId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -46,8 +45,8 @@ namespace EcoinverGMAO_api.Migrations
                 {
                     table.PrimaryKey("PK_CommercialNeedsPlanningDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CommercialNeedsPlanningDetails_CommercialNeedsPlanning_Comme~",
-                        column: x => x.CommercialNeedsPlanningId,
+                        name: "FK_CommercialNeedsPlanningDetails_CommercialNeedsPlanning_IdCom~",
+                        column: x => x.IdCommercialNeedsPlanning,
                         principalTable: "CommercialNeedsPlanning",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -110,9 +109,9 @@ namespace EcoinverGMAO_api.Migrations
                 column: "CultivePlanningId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommercialNeedsPlanningDetails_CommercialNeedsPlanningId",
+                name: "IX_CommercialNeedsPlanningDetails_IdCommercialNeedsPlanning",
                 table: "CommercialNeedsPlanningDetails",
-                column: "CommercialNeedsPlanningId");
+                column: "IdCommercialNeedsPlanning");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CultivesPlanningDetails_CultivePlanningId",
