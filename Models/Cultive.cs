@@ -18,8 +18,16 @@
         public double? ProduccionEstimada { get; set; }
         public DateTime? FechaSiembra { get; set; }
         public DateTime? FechaFin { get; set; }
+
         // Nuevos campos para latitud y longitud (almacenados como varchar(9))
         public string Latitud { get; set; }
         public string Longitud { get; set; }
+
+        // Nuevo campo FK para el planning de cultivo
+        public int? IdCultivePlanning { get; set; }
+
+        // Propiedad de navegación para la tabla CultivePlanning
+        // (opcional pero recomendable si utilizas Entity Framework)
+        public virtual CultivePlanning CultivePlanning { get; set; }
     }
 }

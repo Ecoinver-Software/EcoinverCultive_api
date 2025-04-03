@@ -12,10 +12,14 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public DbSet<Company> Companies { get; set; }
     public DbSet<Center> Centers { get; set; }
     public DbSet<CommercialNeeds> CommercialNeeds { get; set; }
+    public DbSet<CommercialNeedsPlanning> CommercialNeedsPlanning { get; set; }
+    public DbSet<CommercialNeedsPlanningDetails> CommercialNeedsPlanningDetails { get; set; }
+
     public DbSet<Cultive> Cultives { get; set; }
+    public DbSet<CultivePlanning> CultivesPlanning { get; set; }
+    public DbSet<CultivePlanningDetails> CultivesPlanningDetails { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Gender> Gender { get; set; }
-    public DbSet<CommercialNeedsPlanning> CommercialNeedsPlanning { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
