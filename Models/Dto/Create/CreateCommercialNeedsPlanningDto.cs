@@ -2,7 +2,7 @@
 {
     public class CreateCommercialNeedsPlanningDto
     {
-        public required int IdCommercial { get; set; }
+        public required int IdCommercialNeed { get; set; }
         public int WeekNumber { get; set; }
         public decimal Kgs { get; set; }
         public DateTime StartDate { get; set; }

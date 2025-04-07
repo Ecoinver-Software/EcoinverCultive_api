@@ -51,13 +51,13 @@ namespace EcoinverGMAO_api.Controllers
                 return BadRequest(ModelState);
 
             // Validar que el idCommercialNeed existe en la BD
-            var exists = await _context.CommercialNeeds.AnyAsync(c => c.Id == createDto.IdCommercial);
+            var exists = await _context.CommercialNeeds.AnyAsync(c => c.Id == createDto.IdCommercialNeed);
             if (!exists)
                 return BadRequest(new { message = "El ID de necesidad comercial no existe." });
 
             // Mapear y asignar el IdCommercialNeed
             var entity = _mapper.Map<CommercialNeedsPlanning>(createDto);
-            entity.IdCommercialNeed = createDto.IdCommercial; // Asegurar que el ID está presente
+            entity.IdCommercialNeed = createDto.IdCommercialNeed; // Asegurar que el ID está presente
 
             _context.CommercialNeedsPlanning.Add(entity);
             await _context.SaveChangesAsync();

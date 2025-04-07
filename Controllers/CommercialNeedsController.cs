@@ -70,6 +70,22 @@ namespace EcoinverGMAO_api.Controllers
             // Mapear los campos actualizables del DTO a la entidad existente
             _mapper.Map(updateDto, commercialNeed);
 
+            var relatedPlannings = await _context.CommercialNeedsPlanning
+            .Where(p => p.IdCommercialNeed == id)
+            .ToListAsync();
+         
+            // Actualizar los campos relevantes en cada planificación
+            foreach (var planning in relatedPlannings)
+            {
+                // Aquí debes actualizar los campos específicos que quieres sincronizar
+              
+                planning.StartDate = commercialNeed.StartDate;
+                planning.EndDate = commercialNeed.EndDate;
+                planning.Kgs = commercialNeed.Kgs;
+           
+
+                _context.CommercialNeedsPlanning.Update(planning);
+            }
             _context.CommercialNeeds.Update(commercialNeed);
             await _context.SaveChangesAsync();
 
