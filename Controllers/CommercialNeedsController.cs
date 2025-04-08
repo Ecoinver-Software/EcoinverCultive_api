@@ -53,7 +53,9 @@ namespace EcoinverGMAO_api.Controllers
             _context.CommercialNeeds.Add(commercialNeed);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Commercial need created successfully." });
+            return Ok(new { message = "Commercial need created successfully.",
+            data = commercialNeed
+            });
         }
 
         // PUT: api/commercialneeds/{id}

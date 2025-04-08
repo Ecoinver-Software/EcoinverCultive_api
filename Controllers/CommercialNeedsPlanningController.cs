@@ -62,7 +62,11 @@ namespace EcoinverGMAO_api.Controllers
             _context.CommercialNeedsPlanning.Add(entity);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Commercial Needs Planning created successfully." });
+            return Ok(new { message = "Commercial Needs Planning created successfully." ,
+                entity
+
+            
+            });
         }
 
 
