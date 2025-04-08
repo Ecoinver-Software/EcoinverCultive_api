@@ -2,8 +2,12 @@
 {
     public class CultivePlanning : BaseModel
     {
+        public int Id { get; set; }
         public string Nombre { get; set; }     // Nombre del planning
         public DateTime? FechaInicio { get; set; }  // Fecha de inicio
         public DateTime? FechaFin { get; set; }     // Fecha de fin
+
+        // Relación de uno a muchos con CultivePlanningDetails
+        public virtual ICollection<CultivePlanningDetails> CultivePlanningDetails { get; set; }
     }
 }
