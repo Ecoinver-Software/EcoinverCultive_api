@@ -11,7 +11,7 @@ namespace EcoinverGMAO_api.Services
     {
         Task<IEnumerable<CultivePlanningDetailsDto>> GetAllAsync();
         Task<CultivePlanningDetailsDto> GetByIdAsync(int id);
-        Task<CultivePlanningDetailsDto> CreateAsync(CreateCultiveProductionDto dto);
+        Task<CultivePlanningDetailsDto> CreateAsync(CreateCultivePlanningDetailsDto dto);
         Task<CultivePlanningDetailsDto> UpdateAsync(int id, UpdateCultivePlanningDetailsDto dto);
         Task<bool> DeleteAsync(int id);
     }
@@ -41,7 +41,7 @@ namespace EcoinverGMAO_api.Services
             return _mapper.Map<CultivePlanningDetailsDto>(item);
         }
 
-        public async Task<CultivePlanningDetailsDto> CreateAsync(CreateCultiveProductionDto dto)
+        public async Task<CultivePlanningDetailsDto> CreateAsync(CreateCultivePlanningDetailsDto dto)
         {
             var entity = _mapper.Map<CultivePlanningDetails>(dto);
             var created = await _repository.AddAsync(entity);

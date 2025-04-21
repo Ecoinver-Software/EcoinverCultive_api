@@ -12,6 +12,6 @@
         public DateTime? FechaFin { get; set; }
 
         // Propiedad de navegación: relación uno a uno
-        public int CultivePlanningDetails { get; set; }
+        //public int CultivePlanningDetails { get; set; }
     }
 }
