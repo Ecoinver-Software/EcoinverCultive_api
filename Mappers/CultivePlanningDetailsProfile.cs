@@ -9,7 +9,7 @@ namespace EcoinverGMAO_api.Profiles
         public CultivePlanningDetailsProfile()
         {
             CreateMap<CultivePlanningDetails, CultivePlanningDetailsDto>().ReverseMap();
-            CreateMap<CultivePlanningDetails, CreateCultivePlanningDetailsDto>().ReverseMap();
+            CreateMap<CultivePlanningDetails, CreateCultiveProductionDto>().ReverseMap();
             CreateMap<CultivePlanningDetails, UpdateCultivePlanningDetailsDto>().ReverseMap();
         }
     }

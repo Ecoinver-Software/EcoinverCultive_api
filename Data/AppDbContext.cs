@@ -18,6 +18,8 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public DbSet<Cultive> Cultives { get; set; }
     public DbSet<CultivePlanning> CultivesPlanning { get; set; }
     public DbSet<CultivePlanningDetails> CultivesPlanningDetails { get; set; }
+    public DbSet<CultiveProduction> CultivesProduction { get; set; }
+
     public DbSet<Client> Clients { get; set; }
     public DbSet<Gender> Gender { get; set; }
 

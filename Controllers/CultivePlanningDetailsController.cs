@@ -39,7 +39,7 @@ namespace EcoinverGMAO_api.Controllers
         
         // POST: api/cultivePlannings
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateCultivePlanningDetailsDto createCultivePlanningDetailsDto)
+        public async Task<IActionResult> CreateAsync(CreateCultiveProductionDto createCultivePlanningDetailsDto)
         {
             CultivePlanningDetailsDto createdCultivePlanningDetails = await _cultivePlanningDetailsService.CreateAsync(createCultivePlanningDetailsDto);
             return CreatedAtAction(nameof(GetById), new { id = createdCultivePlanningDetails.CultivePlanningId }, createdCultivePlanningDetails);
