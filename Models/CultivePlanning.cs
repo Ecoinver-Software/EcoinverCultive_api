@@ -1,4 +1,6 @@
-﻿namespace EcoinverGMAO_api.Models.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EcoinverGMAO_api.Models.Entities
 {
     public class CultivePlanning : BaseModel
     {
@@ -9,5 +11,11 @@
 
         // Relación de uno a muchos con CultivePlanningDetails
         public virtual ICollection<CultivePlanningDetails> CultivePlanningDetails { get; set; }
+
+        // 1) Añade la FK y la navegación a Gender
+        public int? IdGenero { get; set; }
+
+        [ForeignKey(nameof(IdGenero))]
+        public virtual Gender Genero { get; set; }
     }
 }

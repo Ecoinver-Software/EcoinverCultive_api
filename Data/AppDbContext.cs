@@ -36,5 +36,14 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
             .HasForeignKey(p => p.CultiveId)        // la columna CultiveId es la FK
             .OnDelete(DeleteBehavior.Cascade);      // al borrar un Cultive, borramos sus productions
 
+        // 2. CONFIGURACIÓN 1:1 ENTRE CultivePlanning ↔ Gender
+        modelBuilder.Entity<CultivePlanning>()
+            .HasOne(p => p.Genero)                   // cada Planning tiene un Gender
+            .WithOne(g => g.CultivePlanning)        // cada Gender apunta a un único Planning
+            .HasForeignKey<CultivePlanning>(p => p.IdGenero)
+            .IsRequired(false)                      //hace que sea nullable
+            .OnDelete(DeleteBehavior.Restrict);     // evita cascada si borras el Gender
+
+
     }
 }
