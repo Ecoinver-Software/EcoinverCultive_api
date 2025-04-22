@@ -9,6 +9,11 @@ namespace EcoinverGMAO_api.Profiles
         public CultiveProfile()
         {
             CreateMap<Cultive, CultiveDto>();
+
+            // Mapeo de actualización: sólo IdCultivePlanning
+            CreateMap<UpdateCultiveDto, Cultive>()
+                .ForMember(dest => dest.IdCultivePlanning,
+                           opt => opt.MapFrom(src => src.IdCultivePlanning));
         }
     }
 }

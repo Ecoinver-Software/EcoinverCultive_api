@@ -11,6 +11,7 @@ namespace EcoinverGMAO_api.Services
     {
         Task<IEnumerable<CultiveDto>> GetAllCultivesAsync();
         Task<CultiveDto> GetCultiveByIdAsync(int id);
+        Task<CultiveDto> UpdateCultiveAsync(int id, UpdateCultiveDto dto);
     }
 
     public class CultiveService : ICultiveService
@@ -35,6 +36,23 @@ namespace EcoinverGMAO_api.Services
             var cultive = await _repository.GetByIdAsync(id);
             if (cultive == null)
                 return null;
+            return _mapper.Map<CultiveDto>(cultive);
+        }
+
+        public async Task<CultiveDto> UpdateCultiveAsync(int id, UpdateCultiveDto dto)
+        {
+            // 1) Recuperar la entidad
+            var cultive = await _repository.GetByIdAsync(id);
+            if (cultive == null)
+                return null;            // aquí devuelves un CultiveDto nulo, no un Task
+
+            // 2) Mapear los cambios del DTO sobre la entidad
+            _mapper.Map(dto, cultive);
+
+            // 3) Persistir la actualización
+            await _repository.UpdateAsync(cultive);
+
+            // 4) Devolver el DTO resultante
             return _mapper.Map<CultiveDto>(cultive);
         }
     }

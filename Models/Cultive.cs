@@ -37,5 +37,9 @@ namespace EcoinverGMAO_api.Models.Entities
 
         [ForeignKey(nameof(IdCultivePlanning))]
         public virtual CultivePlanning CultivePlanning { get; set; }
+
+
+        //navegacion inversa
+        public virtual ICollection<CultiveProduction> Productions { get; set; }
     }
 }

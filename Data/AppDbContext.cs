@@ -29,6 +29,12 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
         // que IdentityDbContext hace internamente
         base.OnModelCreating(modelBuilder);
 
-        
+        // 1) Configura Cultive → CultiveProduction
+        modelBuilder.Entity<CultiveProduction>()
+            .HasOne(p => p.Cultive)                 // cada producción apunta a un Cultive
+            .WithMany(c => c.Productions)           // un Cultive puede tener muchas productions
+            .HasForeignKey(p => p.CultiveId)        // la columna CultiveId es la FK
+            .OnDelete(DeleteBehavior.Cascade);      // al borrar un Cultive, borramos sus productions
+
     }
 }

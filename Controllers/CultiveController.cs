@@ -36,5 +36,19 @@ namespace EcoinverGMAO_api.Controllers
                 return NotFound(new { message = "Cultive not found." });
             return Ok(cultive);
         }
+
+        // PATCH: api/cultives/{id}
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchCultive(int id, [FromBody] UpdateCultiveDto dto)
+        {
+            if (dto == null)
+                return BadRequest(new { message = "No data provided." });
+
+            var updated = await _cultiveService.UpdateCultiveAsync(id, dto);
+            if (updated == null)
+                return NotFound(new { message = "Cultive not found." });
+
+            return Ok(updated);
+        }
     }
 }

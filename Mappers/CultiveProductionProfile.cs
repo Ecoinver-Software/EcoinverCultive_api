@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using EcoinverGMAO_api.Models.Entities;
 using EcoinverGMAO_api.Models.Dto;
+using EcoinverGMAO_api.Models.Entities;
 
 namespace EcoinverGMAO_api.Profiles
 {
@@ -8,20 +8,24 @@ namespace EcoinverGMAO_api.Profiles
     {
         public CultiveProductionProfile()
         {
-            // Existing mappings
-            CreateMap<CultiveProduction, CultiveProductionDto>().ReverseMap();
-            CreateMap<CultiveProduction, CreateCultiveProductionDto>().ReverseMap();
-            CreateMap<CultiveProduction, UpdateCultiveProductionDto>().ReverseMap();
+            // Entidad → DTO de salida
+            CreateMap<CultiveProduction, CultiveProductionDto>();
 
-            // Add the new mappings with explicit property mapping for the foreign key
-            CreateMap<CultivePlanningDetails, CultiveProductionDto>()
-                .ForMember(dest => dest.CultivePlanningDetailsId, opt => opt.MapFrom(src => src.CultivePlanningId));
+            // DTO de creación → Entidad
+            CreateMap<CreateCultiveProductionDto, CultiveProduction>()
+                .ForMember(d => d.CultiveId, opt => opt.MapFrom(src => src.CultiveId))
+                .ForMember(d => d.CultivePlanningDetailsId, opt => opt.MapFrom(src => src.CultivePlanningDetailsId))
+                .ForMember(d => d.Kilos, opt => opt.MapFrom(src => src.Kilos))
+                .ForMember(d => d.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
+                .ForMember(d => d.FechaFin, opt => opt.MapFrom(src => src.FechaFin));
 
-            CreateMap<CreateCultiveProductionDto, CultivePlanningDetails>()
-                .ForMember(dest => dest.CultivePlanningId, opt => opt.MapFrom(src => src.CultivePlanningDetailsId));
-
-            CreateMap<UpdateCultiveProductionDto, CultivePlanningDetails>()
-                .ForMember(dest => dest.CultivePlanningId, opt => opt.MapFrom(src => src.CultivePlanningDetailsId));
+            // DTO de actualización → Entidad
+            CreateMap<UpdateCultiveProductionDto, CultiveProduction>()
+                .ForMember(d => d.CultiveId, opt => opt.MapFrom(src => src.CultiveId))
+                .ForMember(d => d.CultivePlanningDetailsId, opt => opt.MapFrom(src => src.CultivePlanningDetailsId))
+                
+                .ForMember(d => d.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
+                .ForMember(d => d.FechaFin, opt => opt.MapFrom(src => src.FechaFin));
         }
     }
 }

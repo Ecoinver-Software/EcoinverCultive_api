@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcoinverGMAO_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422073313_MakeCultivePlanningNullable")]
+    partial class MakeCultivePlanningNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,9 +434,6 @@ namespace EcoinverGMAO_api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("CultiveId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CultivePlanningDetailsId")
                         .HasColumnType("int");
 
@@ -453,16 +453,10 @@ namespace EcoinverGMAO_api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("KilosAjustados")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CultiveId");
 
                     b.HasIndex("CultivePlanningDetailsId");
 
@@ -765,19 +759,11 @@ namespace EcoinverGMAO_api.Migrations
 
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultiveProduction", b =>
                 {
-                    b.HasOne("EcoinverGMAO_api.Models.Entities.Cultive", "Cultive")
-                        .WithMany("Productions")
-                        .HasForeignKey("CultiveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EcoinverGMAO_api.Models.Entities.CultivePlanningDetails", "CultivePlanningDetails")
                         .WithMany()
                         .HasForeignKey("CultivePlanningDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cultive");
 
                     b.Navigation("CultivePlanningDetails");
                 });
@@ -836,11 +822,6 @@ namespace EcoinverGMAO_api.Migrations
             modelBuilder.Entity("EcoinverGMAO_api.Models.CommercialNeeds", b =>
                 {
                     b.Navigation("CommercialNeedsPlannings");
-                });
-
-            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Cultive", b =>
-                {
-                    b.Navigation("Productions");
                 });
 
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultivePlanning", b =>

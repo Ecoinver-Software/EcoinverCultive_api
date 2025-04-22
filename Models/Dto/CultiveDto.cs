@@ -19,5 +19,6 @@
         public DateTime? FechaFin { get; set; }
         public string Latitud { get; set; }
         public string Longitud { get; set; }
+        public int? IdCultivePlanning { get; set; }
     }
 }
