@@ -43,7 +43,7 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
             .HasForeignKey<CultivePlanning>(p => p.IdGenero)
             .IsRequired(false)                      //hace que sea nullable
             .OnDelete(DeleteBehavior.Restrict);     // evita cascada si borras el Gender
-
-
+        
+        
     }
 }

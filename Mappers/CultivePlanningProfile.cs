@@ -2,15 +2,20 @@
 using EcoinverGMAO_api.Models.Entities;
 using EcoinverGMAO_api.Models.Dto;
 
-namespace EcoinverGMAO_api.Profiles
+public class CultivePlanningProfile : Profile
 {
-    public class CultivePlanningProfile : Profile
+    public CultivePlanningProfile()
     {
-        public CultivePlanningProfile()
-        {
-            CreateMap<CultivePlanning, CultivePlanningDto>().ReverseMap();
-            CreateMap<CultivePlanning, CreateCultivePlanningDto>().ReverseMap();
-            CreateMap<CultivePlanning, UpdateCultivePlanningDto>().ReverseMap();
-        }
+        CreateMap<CreateCultivePlanningDto, CultivePlanning>()
+            // mappea IdGenero del DTO al entity
+            .ForMember(dest => dest.IdGenero, opt => opt.MapFrom(src => src.IdGenero))
+            .ReverseMap();
+
+        CreateMap<UpdateCultivePlanningDto, CultivePlanning>()
+            .ForMember(dest => dest.IdGenero, opt => opt.MapFrom(src => src.IdGenero))
+            .ReverseMap();
+
+        CreateMap<CultivePlanning, CultivePlanningDto>()
+            .ReverseMap();
     }
 }
