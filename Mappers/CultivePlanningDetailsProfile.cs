@@ -8,16 +8,18 @@ namespace EcoinverGMAO_api.Profiles
     {
         public CultivePlanningDetailsProfile()
         {
-            // Map entity → read‑DTO
+            // lectura
             CreateMap<CultivePlanningDetails, CultivePlanningDetailsDto>();
 
-            // Map create‑DTO → entity
+            // creación
             CreateMap<CreateCultivePlanningDetailsDto, CultivePlanningDetails>();
 
-            // Map update‑DTO → entity
-            CreateMap<UpdateCultivePlanningDetailsDto, CultivePlanningDetails>();
-
-            
+            // actualización
+            CreateMap<UpdateCultivePlanningDetailsDto, CultivePlanningDetails>()
+                .ForMember(
+                    dest => dest.CultivePlanningId,
+                    opt => opt.MapFrom(src => src.CultivePlanningId)
+                );
         }
     }
 }

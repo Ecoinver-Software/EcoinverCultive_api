@@ -138,8 +138,10 @@ namespace EcoinverGMAO_api.Services
                 _logger.LogWarning("CultiveProduction {Id} no encontrada para borrar.", id);
                 return false;
             }
-            await _productionRepo.DeleteAsync(entity);
-            _logger.LogInformation("Eliminada CultiveProduction {Id}.", id);
+
+            // Hard delete en lugar de soft delete
+            await _productionRepo.HardDeleteAsync(entity);
+            _logger.LogInformation("Hard-deleted CultiveProduction {Id}.", id);
             return true;
         }
     }
