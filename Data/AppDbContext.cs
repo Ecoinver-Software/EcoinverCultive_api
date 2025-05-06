@@ -38,12 +38,11 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
 
         // 2. CONFIGURACIÓN 1:1 ENTRE CultivePlanning ↔ Gender
         modelBuilder.Entity<CultivePlanning>()
-            .HasOne(p => p.Genero)                   // cada Planning tiene un Gender
-            .WithOne(g => g.CultivePlanning)        // cada Gender apunta a un único Planning
-            .HasForeignKey<CultivePlanning>(p => p.IdGenero)
-            .IsRequired(false)                      //hace que sea nullable
+            .HasOne(p => p.Genero)
+            .WithMany(g => g.CultivePlannings)
+            .HasForeignKey(p => p.IdGenero)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);     // evita cascada si borras el Gender
-        
-        
+
     }
 }

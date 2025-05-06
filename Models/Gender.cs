@@ -8,8 +8,9 @@
         public string NombreFamilia { get; set; }
 
 
-        // Navegación inversa 1:1
-        public virtual CultivePlanning CultivePlanning { get; set; }
+        // Navegación inversa 1:N
+        public virtual ICollection<CultivePlanning> CultivePlannings { get; set; }
+            = new List<CultivePlanning>();
     }
 
 }
