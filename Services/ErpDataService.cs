@@ -31,35 +31,41 @@ public class ErpDataService
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-       SELECT cultivos.CUL_IdCultivo,
-       cultivos.CUL_IdAgriCultivo,
-       agricultores.AGR_Nombre,
-       cultivos.CUL_IdFinca,
-       fincas.FIN_Nombre,
-       cultivos.CUL_IdNave,
-       naves.NAV_Nombre,
-       cultivos.CUL_IdGenero,
-       generos.GEN_Nombre,
-       variedades.VAR_Nombre,
-       cultivos.CUL_Superficie,
-       cultivos.CUL_ProduccionEstimada,
-       cultivos.CUL_FechaSiembraProgra,
-       cultivos.CUL_FechaFinalizaProgra,
-       fincas.FIN_Latitud,
-       fincas.FIN_Longitud,
-       tecnicos.TEC_Nombre,
-       fincas.FIN_Provincia
+       SELECT 
+    cultivos.CUL_IdCultivo,
+    cultivos.CUL_IdAgriCultivo,
+    agricultores.AGR_Nombre,
+    cultivos.CUL_IdFinca,
+    fincas.FIN_Nombre,
+    cultivos.CUL_IdNave,
+    naves.NAV_Nombre,
+    cultivos.CUL_IdGenero,
+    generos.GEN_Nombre,
+    variedades.VAR_Nombre,
+    cultivos.CUL_Superficie,
+    cultivos.CUL_ProduccionEstimada,
+    cultivos.CUL_FechaSiembraProgra,
+    cultivos.CUL_FechaFinalizaProgra,
+    fincas.FIN_Latitud,
+    fincas.FIN_Longitud,
+    tecnicos.TEC_Nombre,
+    fincas.FIN_Provincia
 FROM cultivos
-LEFT JOIN fincas ON cultivos.CUL_IdFinca = fincas.FIN_IdFinca
+LEFT JOIN fincas      ON cultivos.CUL_IdFinca    = fincas.FIN_IdFinca
 LEFT JOIN agricultores ON cultivos.CUL_IdAgriCultivo = agricultores.AGR_Idagricultor
-LEFT JOIN naves ON cultivos.CUL_IdNave = naves.NAV_IdNave 
-LEFT JOIN generos ON cultivos.CUL_IdGenero = generos.GEN_IdGenero
-LEFT JOIN variedades ON cultivos.CUL_IdVariedad = variedades.VAR_IdVariedad
-LEFT JOIN tecnicos ON cultivos.CUL_IdTecnico = tecnicos.TEC_IdTecnico
-WHERE cultivos.CUL_Activo = 'S'
-  AND cultivos.CUL_FechaLog > '2024-09-01'
-  AND cultivos.CUL_IdNave IS NOT NULL
-  AND naves.NAV_Nombre IS NOT NULL;
+LEFT JOIN naves       ON cultivos.CUL_IdNave     = naves.NAV_IdNave 
+LEFT JOIN generos     ON cultivos.CUL_IdGenero   = generos.GEN_IdGenero
+LEFT JOIN variedades  ON cultivos.CUL_IdVariedad = variedades.VAR_IdVariedad
+LEFT JOIN tecnicos    ON cultivos.CUL_IdTecnico  = tecnicos.TEC_IdTecnico
+WHERE cultivos.CUL_Activo       = 'S'
+  AND cultivos.CUL_FechaLog     > '2024-09-01'
+  AND fincas.FIN_Provincia        IS NOT NULL
+  AND CHAR_LENGTH(TRIM(fincas.FIN_Provincia)) > 0
+  AND tecnicos.TEC_Nombre         IS NOT NULL
+  AND CHAR_LENGTH(TRIM(tecnicos.TEC_Nombre)) > 0
+  AND naves.NAV_Nombre            IS NOT NULL
+  AND CHAR_LENGTH(TRIM(naves.NAV_Nombre))   > 0;
+
     ";
 
         using var reader = cmd.ExecuteReader();
