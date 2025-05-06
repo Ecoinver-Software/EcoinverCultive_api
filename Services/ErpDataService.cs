@@ -31,32 +31,35 @@ public class ErpDataService
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-        SELECT cultivos.CUL_IdCultivo,
-               cultivos.CUL_IdAgriCultivo,
-               agricultores.AGR_Nombre,
-               cultivos.CUL_IdFinca,
-               fincas.FIN_Nombre,
-               cultivos.CUL_IdNave,
-               naves.NAV_Nombre,
-               cultivos.CUL_IdGenero,
-               generos.GEN_Nombre,
-               variedades.VAR_Nombre,
-               cultivos.CUL_Superficie,
-               cultivos.CUL_ProduccionEstimada,
-               cultivos.CUL_FechaSiembraProgra,
-               cultivos.CUL_FechaFinalizaProgra,
-               fincas.FIN_Latitud,
-               fincas.FIN_Longitud
-        FROM cultivos
-        LEFT JOIN fincas ON cultivos.CUL_IdFinca = fincas.FIN_IdFinca
-        LEFT JOIN agricultores ON cultivos.CUL_IdAgriCultivo = agricultores.AGR_Idagricultor
-        LEFT JOIN naves ON cultivos.CUL_IdNave = naves.NAV_IdNave 
-        LEFT JOIN generos ON cultivos.CUL_IdGenero = generos.GEN_IdGenero
-        LEFT JOIN variedades ON cultivos.CUL_IdVariedad = variedades.VAR_IdVariedad
-        WHERE cultivos.CUL_Activo = 'S'
-          AND cultivos.CUL_FechaLog > '2024-09-01'
-          AND cultivos.CUL_IdNave IS NOT NULL
-          AND naves.NAV_Nombre IS NOT NULL;
+       SELECT cultivos.CUL_IdCultivo,
+       cultivos.CUL_IdAgriCultivo,
+       agricultores.AGR_Nombre,
+       cultivos.CUL_IdFinca,
+       fincas.FIN_Nombre,
+       cultivos.CUL_IdNave,
+       naves.NAV_Nombre,
+       cultivos.CUL_IdGenero,
+       generos.GEN_Nombre,
+       variedades.VAR_Nombre,
+       cultivos.CUL_Superficie,
+       cultivos.CUL_ProduccionEstimada,
+       cultivos.CUL_FechaSiembraProgra,
+       cultivos.CUL_FechaFinalizaProgra,
+       fincas.FIN_Latitud,
+       fincas.FIN_Longitud,
+       tecnicos.TEC_Nombre,
+       fincas.FIN_Provincia
+FROM cultivos
+LEFT JOIN fincas ON cultivos.CUL_IdFinca = fincas.FIN_IdFinca
+LEFT JOIN agricultores ON cultivos.CUL_IdAgriCultivo = agricultores.AGR_Idagricultor
+LEFT JOIN naves ON cultivos.CUL_IdNave = naves.NAV_IdNave 
+LEFT JOIN generos ON cultivos.CUL_IdGenero = generos.GEN_IdGenero
+LEFT JOIN variedades ON cultivos.CUL_IdVariedad = variedades.VAR_IdVariedad
+LEFT JOIN tecnicos ON cultivos.CUL_IdTecnico = tecnicos.TEC_IdTecnico
+WHERE cultivos.CUL_Activo = 'S'
+  AND cultivos.CUL_FechaLog > '2024-09-01'
+  AND cultivos.CUL_IdNave IS NOT NULL
+  AND naves.NAV_Nombre IS NOT NULL;
     ";
 
         using var reader = cmd.ExecuteReader();
@@ -79,7 +82,11 @@ public class ErpDataService
                 FechaSiembra = reader.IsDBNull(12) ? null : reader.GetDateTime(12),
                 FechaFin = reader.IsDBNull(13) ? null : reader.GetDateTime(13),
                 Latitud = reader.IsDBNull(14) ? null : reader.GetString(14),
-                Longitud = reader.IsDBNull(15) ? null : reader.GetString(15)
+                Longitud = reader.IsDBNull(15) ? null : reader.GetString(15),
+                Tecnico = reader.IsDBNull(15) ? null : reader.GetString(16),
+                Provincia = reader.IsDBNull(15) ? null : reader.GetString(17)
+
+
             };
             cultivos.Add(cultivo);
         }

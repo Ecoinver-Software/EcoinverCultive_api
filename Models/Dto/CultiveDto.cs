@@ -20,5 +20,9 @@
         public string Latitud { get; set; }
         public string Longitud { get; set; }
         public int? IdCultivePlanning { get; set; }
+        public string Tecnico { get; set; }
+        public string Provincia { get; set; }
+
+
     }
 }

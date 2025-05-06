@@ -41,5 +41,9 @@ namespace EcoinverGMAO_api.Models.Entities
 
         //navegacion inversa
         public virtual ICollection<CultiveProduction> Productions { get; set; }
+        public string Tecnico { get; set; }
+        public string Provincia { get; set; }
+
+
     }
 }

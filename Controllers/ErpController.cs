@@ -53,9 +53,12 @@ namespace EcoinverGMAO_api.Controllers
                     existingCultive.ProduccionEstimada = dto.ProduccionEstimada;
                     existingCultive.FechaSiembra = dto.FechaSiembra;
                     existingCultive.FechaFin = dto.FechaFin;
-                    // Actualizamos los nuevos campos
                     existingCultive.Latitud = dto.Latitud;
                     existingCultive.Longitud = dto.Longitud;
+                    existingCultive.Tecnico = dto.Tecnico;
+                    existingCultive.Provincia = dto.Provincia;
+
+
                 }
                 else
                 {
@@ -76,9 +79,10 @@ namespace EcoinverGMAO_api.Controllers
                         ProduccionEstimada = dto.ProduccionEstimada,
                         FechaSiembra = dto.FechaSiembra,
                         FechaFin = dto.FechaFin,
-                        // Asignamos los nuevos campos
                         Latitud = dto.Latitud,
-                        Longitud = dto.Longitud
+                        Longitud = dto.Longitud,
+                        Tecnico = dto.Tecnico,
+                        Provincia = dto.Provincia
                     };
                     _dbContext.Cultives.Add(newCultive);
                 }
