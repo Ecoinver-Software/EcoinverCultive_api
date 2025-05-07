@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
 
     public DbSet<Client> Clients { get; set; }
     public DbSet<Gender> Gender { get; set; }
+    public DbSet<CultiveDataReal> CultiveProductionReal { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

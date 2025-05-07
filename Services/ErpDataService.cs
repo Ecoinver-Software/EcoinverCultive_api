@@ -31,40 +31,40 @@ public class ErpDataService
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-       SELECT 
-    cultivos.CUL_IdCultivo,
-    cultivos.CUL_IdAgriCultivo,
-    agricultores.AGR_Nombre,
-    cultivos.CUL_IdFinca,
-    fincas.FIN_Nombre,
-    cultivos.CUL_IdNave,
-    naves.NAV_Nombre,
-    cultivos.CUL_IdGenero,
-    generos.GEN_Nombre,
-    variedades.VAR_Nombre,
-    cultivos.CUL_Superficie,
-    cultivos.CUL_ProduccionEstimada,
-    cultivos.CUL_FechaSiembraProgra,
-    cultivos.CUL_FechaFinalizaProgra,
-    fincas.FIN_Latitud,
-    fincas.FIN_Longitud,
-    tecnicos.TEC_Nombre,
-    fincas.FIN_Provincia
-FROM cultivos
-LEFT JOIN fincas      ON cultivos.CUL_IdFinca    = fincas.FIN_IdFinca
-LEFT JOIN agricultores ON cultivos.CUL_IdAgriCultivo = agricultores.AGR_Idagricultor
-LEFT JOIN naves       ON cultivos.CUL_IdNave     = naves.NAV_IdNave 
-LEFT JOIN generos     ON cultivos.CUL_IdGenero   = generos.GEN_IdGenero
-LEFT JOIN variedades  ON cultivos.CUL_IdVariedad = variedades.VAR_IdVariedad
-LEFT JOIN tecnicos    ON cultivos.CUL_IdTecnico  = tecnicos.TEC_IdTecnico
-WHERE cultivos.CUL_Activo       = 'S'
-  AND cultivos.CUL_FechaLog     > '2024-09-01'
-  AND fincas.FIN_Provincia        IS NOT NULL
-  AND CHAR_LENGTH(TRIM(fincas.FIN_Provincia)) > 0
-  AND tecnicos.TEC_Nombre         IS NOT NULL
-  AND CHAR_LENGTH(TRIM(tecnicos.TEC_Nombre)) > 0
-  AND naves.NAV_Nombre            IS NOT NULL
-  AND CHAR_LENGTH(TRIM(naves.NAV_Nombre))   > 0;
+        SELECT 
+                cultivos.CUL_IdCultivo,
+                cultivos.CUL_IdAgriCultivo,
+                agricultores.AGR_Nombre,
+                cultivos.CUL_IdFinca,
+                fincas.FIN_Nombre,
+                cultivos.CUL_IdNave,
+                naves.NAV_Nombre,
+                cultivos.CUL_IdGenero,
+                generos.GEN_Nombre,
+                variedades.VAR_Nombre,
+                cultivos.CUL_Superficie,
+                cultivos.CUL_ProduccionEstimada,
+                cultivos.CUL_FechaSiembraProgra,
+                cultivos.CUL_FechaFinalizaProgra,
+                fincas.FIN_Latitud,
+                fincas.FIN_Longitud,
+                tecnicos.TEC_Nombre,
+                fincas.FIN_Provincia
+            FROM cultivos
+                LEFT JOIN fincas      ON cultivos.CUL_IdFinca    = fincas.FIN_IdFinca
+                LEFT JOIN agricultores ON cultivos.CUL_IdAgriCultivo = agricultores.AGR_Idagricultor
+                LEFT JOIN naves       ON cultivos.CUL_IdNave     = naves.NAV_IdNave 
+                LEFT JOIN generos     ON cultivos.CUL_IdGenero   = generos.GEN_IdGenero
+                LEFT JOIN variedades  ON cultivos.CUL_IdVariedad = variedades.VAR_IdVariedad
+                LEFT JOIN tecnicos    ON cultivos.CUL_IdTecnico  = tecnicos.TEC_IdTecnico
+            WHERE cultivos.CUL_Activo       = 'S'
+                  AND cultivos.CUL_FechaLog     > '2024-09-01'
+                  AND fincas.FIN_Provincia        IS NOT NULL
+                  AND CHAR_LENGTH(TRIM(fincas.FIN_Provincia)) > 0
+                  AND tecnicos.TEC_Nombre         IS NOT NULL
+                  AND CHAR_LENGTH(TRIM(tecnicos.TEC_Nombre)) > 0
+                  AND naves.NAV_Nombre            IS NOT NULL
+                  AND CHAR_LENGTH(TRIM(naves.NAV_Nombre))   > 0;
 
     ";
 
@@ -84,7 +84,7 @@ WHERE cultivos.CUL_Activo       = 'S'
                 NombreGenero = reader.IsDBNull(8) ? null : reader.GetString(8),
                 NombreVariedad = reader.IsDBNull(9) ? null : reader.GetString(9),
                 Superficie = reader.IsDBNull(10) ? null : reader.GetDouble(10),
-                ProduccionEstimada = reader.IsDBNull(11) ? null : reader.GetDouble(11),
+                //ProduccionEstimada = reader.IsDBNull(11) ? null : reader.GetDouble(11),
                 FechaSiembra = reader.IsDBNull(12) ? null : reader.GetDateTime(12),
                 FechaFin = reader.IsDBNull(13) ? null : reader.GetDateTime(13),
                 Latitud = reader.IsDBNull(14) ? null : reader.GetString(14),
@@ -130,6 +130,87 @@ WHERE cultivos.CUL_Activo       = 'S'
         }
 
         return clients;
+    }
+    public List<CultiveDataRealDto> GetCultivosProduccionReal()
+    {
+        var lista = new List<CultiveDataRealDto>();
+
+        using var conn = new MySqlConnection(_erpConnectionString);
+        conn.Open();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+        SELECT
+            c.CUL_IdCultivo,
+            c.CUL_IdFinca,
+            c.CUL_IdAgriCultivo,
+            a.AGR_Nombre,
+            c.CUL_IdGenero,
+            c.CUL_Superficie,
+            SUM(l.AEL_kilosnetos)                                   AS KilosNetos,
+            (SUM(l.AEL_kilosnetos) / NULLIF(c.CUL_Superficie,0))   AS KilosM2
+        FROM cultivos AS c
+        LEFT JOIN fincas     AS f ON c.CUL_IdFinca    = f.FIN_IdFinca
+        LEFT JOIN agricultores AS a ON c.CUL_IdAgriCultivo = a.AGR_Idagricultor
+        LEFT JOIN naves      AS n ON c.CUL_IdNave     = n.NAV_IdNave
+        LEFT JOIN generos    AS g ON c.CUL_IdGenero   = g.GEN_IdGenero
+        LEFT JOIN variedades AS v ON c.CUL_IdVariedad = v.VAR_IdVariedad
+        LEFT JOIN tecnicos   AS t ON c.CUL_IdTecnico  = t.TEC_IdTecnico
+        LEFT JOIN netagrocomer.albentrada_lineas AS l 
+            ON c.CUL_IdCultivo = l.AEL_idcultivo
+        WHERE
+            c.CUL_Activo    = 'S'
+            AND c.CUL_FechaLog > '2024-09-01'
+            AND f.FIN_Provincia    IS NOT NULL
+            AND CHAR_LENGTH(TRIM(f.FIN_Provincia)) > 0
+            AND t.TEC_Nombre       IS NOT NULL
+            AND CHAR_LENGTH(TRIM(t.TEC_Nombre)) > 0
+            AND n.NAV_Nombre       IS NOT NULL
+            AND CHAR_LENGTH(TRIM(n.NAV_Nombre))   > 0
+        GROUP BY
+            c.CUL_IdCultivo,
+            c.CUL_IdFinca,
+            c.CUL_IdAgriCultivo,
+            a.AGR_Nombre,
+            c.CUL_IdGenero,
+            c.CUL_Superficie
+        ORDER BY
+            KilosM2 DESC;
+    ";
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            lista.Add(new CultiveDataRealDto
+            {
+                // Id lo igualamos al IdCultivo para mantener un identificador único
+                Id = reader.GetInt32("CUL_IdCultivo"),
+                IdCultivo = reader.GetInt32("CUL_IdCultivo"),
+                IdAgricultor = reader.IsDBNull(reader.GetOrdinal("CUL_IdAgriCultivo"))
+                                      ? (int?)null
+                                      : reader.GetInt32("CUL_IdAgriCultivo"),
+                NombreAgricultor = reader.IsDBNull(reader.GetOrdinal("AGR_Nombre"))
+                                      ? null
+                                      : reader.GetString("AGR_Nombre"),
+                IdFinca = reader.IsDBNull(reader.GetOrdinal("CUL_IdFinca"))
+                                      ? (int?)null
+                                      : reader.GetInt32("CUL_IdFinca"),
+                IdGenero = reader.IsDBNull(reader.GetOrdinal("CUL_IdGenero"))
+                                      ? (int?)null
+                                      : reader.GetInt32("CUL_IdGenero"),
+                Superficie = reader.IsDBNull(reader.GetOrdinal("CUL_Superficie"))
+                                      ? (double?)null
+                                      : reader.GetDouble("CUL_Superficie"),
+                KilosNetos = reader.IsDBNull(reader.GetOrdinal("KilosNetos"))
+                                      ? (double?)null
+                                      : reader.GetDouble("KilosNetos"),
+                KilosM2 = reader.IsDBNull(reader.GetOrdinal("KilosM2"))
+                                      ? (double?)null
+                                      : reader.GetDouble("KilosM2")
+            });
+        }
+
+        return lista;
     }
     public List<GenderSyncDto> GetGenerosSincronizados()
     {

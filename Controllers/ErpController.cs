@@ -203,6 +203,66 @@ namespace EcoinverGMAO_api.Controllers
                 Count = generosFromErp.Count
             });
         }
+        // GET api/erp/production-real
+        [HttpGet("production-real")]
+        public async Task<IActionResult> GetCultivesProductionRealAndSave()
+        {
+            // 1) Obtener los datos reales de producción desde el ERP
+            var produccionReal = _erpDataService.GetCultivosProduccionReal();
+            var idsEnErp = produccionReal.Select(x => x.IdCultivo).ToList();
+
+            // 2) Upsert en la tabla CultiveDataReal
+            foreach (var dto in produccionReal)
+            {
+                var existing = await _dbContext.CultiveProductionReal
+                    .SingleOrDefaultAsync(r => r.IdCultivo == dto.IdCultivo);
+
+                if (existing != null)
+                {
+                    // actualizar
+                    existing.IdAgricultor = dto.IdAgricultor;
+                    existing.NombreAgricultor = dto.NombreAgricultor;
+                    existing.IdFinca = dto.IdFinca;
+                    existing.IdGenero = dto.IdGenero;
+                    existing.Superficie = dto.Superficie;
+                    existing.KilosNetos = dto.KilosNetos;
+                    existing.KilosM2 = dto.KilosM2;
+                }
+                else
+                {
+                    // insertar
+                    var nueva = new CultiveDataReal
+                    {
+                        IdCultivo = dto.IdCultivo,
+                        IdAgricultor = dto.IdAgricultor,
+                        NombreAgricultor = dto.NombreAgricultor,
+                        IdFinca = dto.IdFinca,
+                        IdGenero = dto.IdGenero,
+                        Superficie = dto.Superficie,
+                        KilosNetos = dto.KilosNetos,
+                        KilosM2 = dto.KilosM2
+                    };
+                    _dbContext.CultiveProductionReal.Add(nueva);
+                }
+            }
+
+            // 3) Eliminar los registros locales que ya no existen en el ERP (opcional)
+            var toRemove = _dbContext.CultiveProductionReal
+                .Where(r => !idsEnErp.Contains(r.IdCultivo));
+            _dbContext.CultiveProductionReal.RemoveRange(toRemove);
+
+            // 4) Guardar
+            await _dbContext.SaveChangesAsync();
+
+            // 5) Devolver al cliente
+            return Ok(new
+            {
+                Message = "Producción real sincronizada correctamente (Upsert).",
+                Count = produccionReal.Count,
+                Data = produccionReal
+            });
+        }
+
 
     }
 }
