@@ -64,7 +64,9 @@ namespace EcoinverGMAO_api.Services
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return false;
-            await _repository.DeleteAsync(entity);
+
+            // Hard delete en lugar de soft delete
+            await _repository.HardDeleteAsync(entity);
             return true;
         }
     }
