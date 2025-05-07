@@ -43,6 +43,10 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
             .HasForeignKey(p => p.IdGenero)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);     // evita cascada si borras el Gender
-
+                                                    // 4) Reconfigurar el índice sobre IdGenero para que NO sea único
+        modelBuilder.Entity<CultivePlanning>()
+            .HasIndex(p => p.IdGenero)
+            .HasDatabaseName("IX_CultivesPlanning_IdGenero")
+            .IsUnique(false);
     }
 }

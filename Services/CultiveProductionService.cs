@@ -3,7 +3,9 @@ using EcoinverGMAO_api.Data;
 using EcoinverGMAO_api.Models.Entities;
 using EcoinverGMAO_api.Models.Dto;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EcoinverGMAO_api.Services
@@ -15,6 +17,8 @@ namespace EcoinverGMAO_api.Services
         Task<CultiveProductionDto> CreateAsync(CreateCultiveProductionDto dto);
         Task<CultiveProductionDto> UpdateAsync(int id, UpdateCultiveProductionDto dto);
         Task<bool> DeleteAsync(int id);
+        // Método one-off para recalcular estimados en masa
+        Task BulkRecalculateProduccionEstimadoAsync();
     }
 
     public class CultiveProductionService : ICultiveProductionService
@@ -58,52 +62,32 @@ namespace EcoinverGMAO_api.Services
 
         public async Task<CultiveProductionDto> CreateAsync(CreateCultiveProductionDto dto)
         {
-            // 1) Validar existencia del detalle de planificación
-            var detail = await _detailsRepo.GetByIdAsync(dto.CultivePlanningDetailsId);
-            if (detail == null)
-                throw new KeyNotFoundException($"CultivePlanningDetails {dto.CultivePlanningDetailsId} no encontrado.");
+            var detail = await _detailsRepo.GetByIdAsync(dto.CultivePlanningDetailsId)
+                         ?? throw new KeyNotFoundException($"CultivePlanningDetails {dto.CultivePlanningDetailsId} no encontrado.");
+            var cultive = await _cultiveRepo.GetByIdAsync(dto.CultiveId)
+                         ?? throw new KeyNotFoundException($"Cultive {dto.CultiveId} no encontrado.");
 
-            // 2) Validar existencia del cultivo
-            var cultive = await _cultiveRepo.GetByIdAsync(dto.CultiveId);
-            if (cultive == null)
-                throw new KeyNotFoundException($"Cultive {dto.CultiveId} no encontrado.");
-
-            // 3) Mapear DTO → Entidad
             var entity = _mapper.Map<CultiveProduction>(dto);
-
-            // 4) Sobrescribir kilos crudos con los del detalle
             entity.Kilos = detail.Kilos.ToString();
 
-            // 5) Calcular kilos ajustados por superficie (decimal * decimal)
             if (!decimal.TryParse(entity.Kilos, out var kilosVal))
                 throw new InvalidOperationException($"Kilos inválidos: {entity.Kilos}");
 
-            var superficieDec = (decimal)cultive.Superficie;
-            entity.KilosAjustados = (kilosVal * superficieDec).ToString();
+            var superficie = (decimal)cultive.Superficie;
+            entity.KilosAjustados = (kilosVal * superficie).ToString();
 
-            // 6) Persistir
             var created = await _productionRepo.AddAsync(entity);
-            _logger.LogInformation("Creada CultiveProduction {Id} para Cultive {CultiveId}.",
-                                   created.Id, created.CultiveId);
+            _logger.LogInformation("Creada CultiveProduction {Id} para Cultive {CultiveId}.", created.Id, created.CultiveId);
 
+            await RecalculateAndSaveCultiveEstimadaAsync(created.CultiveId);
             return _mapper.Map<CultiveProductionDto>(created);
         }
 
         public async Task<CultiveProductionDto> UpdateAsync(int id, UpdateCultiveProductionDto dto)
         {
-            // 1) Recuperar existente
             var existing = await _productionRepo.GetByIdAsync(id)
                          ?? throw new KeyNotFoundException($"CultiveProduction {id} no encontrada.");
 
-            // 2) Si cambia el cultivo, validar
-            if (dto.CultiveId != existing.CultiveId)
-            {
-                var cultiveNew = await _cultiveRepo.GetByIdAsync(dto.CultiveId)
-                                ?? throw new KeyNotFoundException($"Cultive {dto.CultiveId} no encontrado.");
-                existing.CultiveId = dto.CultiveId;
-            }
-
-            // 3) Si cambia el detalle, validar y actualizar kilos crudos
             if (dto.CultivePlanningDetailsId != existing.CultivePlanningDetailsId)
             {
                 var detailNew = await _detailsRepo.GetByIdAsync(dto.CultivePlanningDetailsId)
@@ -112,21 +96,26 @@ namespace EcoinverGMAO_api.Services
                 existing.Kilos = detailNew.Kilos.ToString();
             }
 
-            // 4) Mapear el resto de campos: fechas
+            if (dto.CultiveId != existing.CultiveId)
+            {
+                var cultiveNew = await _cultiveRepo.GetByIdAsync(dto.CultiveId)
+                                 ?? throw new KeyNotFoundException($"Cultive {dto.CultiveId} no encontrado.");
+                existing.CultiveId = dto.CultiveId;
+            }
+
             existing.FechaInicio = dto.FechaInicio;
             existing.FechaFin = dto.FechaFin;
 
-            // 5) Recalcular kilos ajustados
             if (!decimal.TryParse(existing.Kilos, out var kilosVal))
                 throw new InvalidOperationException($"Kilos inválidos: {existing.Kilos}");
-            var cultiveForCalc = await _cultiveRepo.GetByIdAsync(existing.CultiveId);
-            var superficieDec2 = (decimal)cultiveForCalc.Superficie;
-            existing.KilosAjustados = (kilosVal * superficieDec2).ToString();
 
-            // 6) Persistir
+            var cultiveForCalc = await _cultiveRepo.GetByIdAsync(existing.CultiveId);
+            existing.KilosAjustados = (kilosVal * (decimal)cultiveForCalc.Superficie).ToString();
+
             var updated = await _productionRepo.UpdateAsync(existing);
             _logger.LogInformation("Actualizada CultiveProduction {Id}.", updated.Id);
 
+            await RecalculateAndSaveCultiveEstimadaAsync(updated.CultiveId);
             return _mapper.Map<CultiveProductionDto>(updated);
         }
 
@@ -139,10 +128,46 @@ namespace EcoinverGMAO_api.Services
                 return false;
             }
 
-            // Hard delete en lugar de soft delete
             await _productionRepo.HardDeleteAsync(entity);
             _logger.LogInformation("Hard-deleted CultiveProduction {Id}.", id);
+
+            await RecalculateAndSaveCultiveEstimadaAsync(entity.CultiveId);
             return true;
+        }
+
+        public async Task BulkRecalculateProduccionEstimadoAsync()
+        {
+            var allProductions = await _productionRepo.GetAllAsync();
+            var allCultives = await _cultiveRepo.GetAllAsync();
+
+            foreach (var cultive in allCultives)
+            {
+                var suma = allProductions
+                    .Where(p => p.CultiveId == cultive.Id)
+                    .Select(p => decimal.TryParse(p.KilosAjustados, out var v) ? v : 0M)
+                    .Sum();
+
+                cultive.ProduccionEstimada = (double)suma;
+                await _cultiveRepo.UpdateAsync(cultive);
+            }
+        }
+
+        private async Task RecalculateAndSaveCultiveEstimadaAsync(int cultiveId)
+        {
+            // Suma todos los kilos ajustados de las producciones de este cultivo
+            var producciones = await _productionRepo.GetAllAsync();
+            var total = producciones
+                .Where(p => p.CultiveId == cultiveId)
+                .Select(p => decimal.TryParse(p.KilosAjustados, out var v) ? v : 0M)
+                .Sum();
+
+            var cultive = await _cultiveRepo.GetByIdAsync(cultiveId);
+            cultive.ProduccionEstimada = (double)total;
+            await _cultiveRepo.UpdateAsync(cultive);
+
+            _logger.LogInformation(
+                "Actualizada ProduccionEstimada del Cultive {CultiveId} a {Total}.",
+                cultiveId, total);
         }
     }
 }
