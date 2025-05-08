@@ -4,6 +4,7 @@ using EcoinverGMAO_api.Data;
 using EcoinverGMAO_api.Models.Entities;
 using System.Threading.Tasks;
 using System.Linq;
+using EcoinverGMAO_api.Models.Dto;
 
 namespace EcoinverGMAO_api.Controllers
 {
@@ -261,6 +262,31 @@ namespace EcoinverGMAO_api.Controllers
                 Count = produccionReal.Count,
                 Data = produccionReal
             });
+        }
+        /// <summary>
+        /// GET api/erp/production-time
+        /// Obtiene la producción total de los cultivos para un género dado en un rango de fechas.
+        /// </summary>
+        /// <param name="fechaInicio">Fecha de inicio del rango (yyyy-MM-dd)</param>
+        /// <param name="fechaFin">Fecha de fin del rango (yyyy-MM-dd)</param>
+        /// <param name="idGenero">Identificador del género a filtrar</param>
+        /// <returns>Lista de CultivoProduccionPorTiempoDto</returns>
+        [HttpGet("production-time")]
+        public ActionResult<List<CultiveDataRealDto>> GetProduccionPorTiempo(
+            [FromQuery] DateTime fechaInicio,
+            [FromQuery] int idGenero)
+        {
+            // 1) Ejecuta la consulta en el servicio
+            var produccion = _erpDataService.GetProduccionPorTiempo(fechaInicio,idGenero);
+
+            // 2) Si no hay datos, devuelve 204 No Content (opcional)
+            if (produccion == null || produccion.Count == 0)
+            {
+                return NoContent();
+            }
+
+            // 3) Devuelve directamente la lista
+            return Ok(produccion);
         }
 
 
