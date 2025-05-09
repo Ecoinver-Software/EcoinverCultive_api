@@ -131,11 +131,12 @@ using (var scope = app.Services.CreateScope())
 
 // 3) Middlewares y configuración del pipeline
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecoinver API v1");
+});
+
 
 app.UseHttpsRedirection();
 
@@ -149,4 +150,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 // 4) Run
-app.Run();
+app.Run("http://0.0.0.0:80");
+
