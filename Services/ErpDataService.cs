@@ -246,7 +246,6 @@ public class ErpDataService
 
         return generos;
     }
-    // En ErpDataService, añade este método:
     public List<CultiveDataRealDto> GetProduccionPorTiempo(
         DateTime fechaInicio,
         int idGenero)
@@ -258,47 +257,54 @@ public class ErpDataService
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-        SELECT
-            c.CUL_IdCultivo,
-            c.CUL_IdAgriCultivo,
-            a.AGR_Nombre AS NombreAgricultor,
-            c.CUL_IdGenero,
-            c.CUL_Superficie,
-            SUM(l.AEL_kilosnetos) AS TotalKilosNetos
-        FROM cultivos AS c
-        LEFT JOIN fincas AS f
-            ON c.CUL_IdFinca = f.FIN_IdFinca
-        LEFT JOIN agricultores AS a
-            ON c.CUL_IdAgriCultivo = a.AGR_Idagricultor
-        LEFT JOIN naves AS n
-            ON c.CUL_IdNave = n.NAV_IdNave
-        LEFT JOIN generos AS g
-            ON c.CUL_IdGenero = g.GEN_IdGenero
-        LEFT JOIN variedades AS v
-            ON c.CUL_IdVariedad = v.VAR_IdVariedad
-        LEFT JOIN tecnicos AS t
-            ON c.CUL_IdTecnico = t.TEC_IdTecnico
-        LEFT JOIN netagrocomer.albentrada_lineas AS l
-            ON c.CUL_IdCultivo = l.AEL_idcultivo
-        LEFT JOIN netagrocomer.albentrada AS e
-            ON l.AEL_idalbaran = e.AEN_idalbaran
-        WHERE
-            c.CUL_Activo = 'S'
-            AND c.CUL_FechaLog > '2024-09-01'
-            AND f.FIN_Provincia IS NOT NULL
-            AND CHAR_LENGTH(TRIM(f.FIN_Provincia)) > 0
-            AND t.TEC_Nombre IS NOT NULL
-            AND CHAR_LENGTH(TRIM(t.TEC_Nombre)) > 0
-            AND n.NAV_Nombre IS NOT NULL
-            AND CHAR_LENGTH(TRIM(n.NAV_Nombre)) > 0
-            AND e.AEN_fecha BETWEEN @fechaInicio AND CURDATE()
-            AND l.AEL_idgenero = @idGenero
-        GROUP BY
-            c.CUL_IdCultivo,
-            c.CUL_IdAgriCultivo,
-            a.AGR_Nombre,
-            c.CUL_IdGenero,
-            c.CUL_Superficie;
+       SELECT
+    DATE_SUB(e.AEN_fecha, INTERVAL WEEKDAY(e.AEN_fecha) DAY) AS SemanaInicio,
+    DATE_ADD(DATE_SUB(e.AEN_fecha, INTERVAL WEEKDAY(e.AEN_fecha) DAY), INTERVAL 6 DAY) AS SemanaFin,
+    c.CUL_IdCultivo,
+    c.CUL_IdAgriCultivo,
+    a.AGR_Nombre AS NombreAgricultor,
+    c.CUL_IdGenero,
+    c.CUL_Superficie,
+    SUM(l.AEL_kilosnetos) AS TotalKilosNetos
+FROM cultivos AS c
+LEFT JOIN fincas AS f
+    ON c.CUL_IdFinca = f.FIN_IdFinca
+LEFT JOIN agricultores AS a
+    ON c.CUL_IdAgriCultivo = a.AGR_Idagricultor
+LEFT JOIN naves AS n
+    ON c.CUL_IdNave = n.NAV_IdNave
+LEFT JOIN generos AS g
+    ON c.CUL_IdGenero = g.GEN_IdGenero
+LEFT JOIN variedades AS v
+    ON c.CUL_IdVariedad = v.VAR_IdVariedad
+LEFT JOIN tecnicos AS t
+    ON c.CUL_IdTecnico = t.TEC_IdTecnico
+LEFT JOIN netagrocomer.albentrada_lineas AS l
+    ON c.CUL_IdCultivo = l.AEL_idcultivo
+LEFT JOIN netagrocomer.albentrada AS e
+    ON l.AEL_idalbaran = e.AEN_idalbaran
+WHERE
+    c.CUL_Activo = 'S'
+    AND c.CUL_FechaLog > '2024-09-01'
+    AND f.FIN_Provincia IS NOT NULL
+    AND CHAR_LENGTH(TRIM(f.FIN_Provincia)) > 0
+    AND t.TEC_Nombre IS NOT NULL
+    AND CHAR_LENGTH(TRIM(t.TEC_Nombre)) > 0
+    AND n.NAV_Nombre IS NOT NULL
+    AND CHAR_LENGTH(TRIM(n.NAV_Nombre)) > 0
+    AND e.AEN_fecha BETWEEN @fechaInicio AND CURDATE()
+    AND l.AEL_idgenero = @idGenero
+GROUP BY
+    SemanaInicio,
+    SemanaFin,
+    c.CUL_IdCultivo,
+    c.CUL_IdAgriCultivo,
+    a.AGR_Nombre,
+    c.CUL_IdGenero,
+    c.CUL_Superficie
+ORDER BY
+    SemanaInicio;
+
     ";
 
         cmd.Parameters.AddWithValue("@fechaInicio", fechaInicio);
@@ -309,6 +315,8 @@ public class ErpDataService
         {
             resultados.Add(new CultiveDataRealDto
             {
+                FechaInicio = reader.GetDateTime("SemanaInicio"),
+                FechaFin = reader.GetDateTime("SemanaFin"),
                 IdCultivo = reader.GetInt32("CUL_IdCultivo"),
                 IdAgricultor = reader.IsDBNull(reader.GetOrdinal("CUL_IdAgriCultivo"))
                                      ? (int?)null

@@ -22,7 +22,6 @@ namespace EcoinverGMAO_api.Controllers
         }
 
         // GET api/erp/cultives
-        // GET api/erp/cultives
         [HttpGet("cultives")]
         public async Task<IActionResult> GetCultivesAndSave()
         {
