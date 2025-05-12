@@ -85,39 +85,51 @@ namespace EcoinverGMAO_api.Services
 
         public async Task<CultiveProductionDto> UpdateAsync(int id, UpdateCultiveProductionDto dto)
         {
+            // 1️⃣ Cargar la entidad existente
             var existing = await _productionRepo.GetByIdAsync(id)
-                         ?? throw new KeyNotFoundException($"CultiveProduction {id} no encontrada.");
+                           ?? throw new KeyNotFoundException($"CultiveProduction {id} no encontrada.");
 
+            // 2️⃣ Si cambió el detalle, actualizar la referencia
             if (dto.CultivePlanningDetailsId != existing.CultivePlanningDetailsId)
             {
-                var detailNew = await _detailsRepo.GetByIdAsync(dto.CultivePlanningDetailsId)
-                               ?? throw new KeyNotFoundException($"CultivePlanningDetails {dto.CultivePlanningDetailsId} no encontrado.");
                 existing.CultivePlanningDetailsId = dto.CultivePlanningDetailsId;
-                existing.Kilos = detailNew.Kilos.ToString();
             }
 
+            // 3️⃣ Siempre leer el detalle actual (nuevo o viejo) y asignar kilos desde ahí
+            var detail = await _detailsRepo.GetByIdAsync(existing.CultivePlanningDetailsId)
+                         ?? throw new KeyNotFoundException($"CultivePlanningDetails {existing.CultivePlanningDetailsId} no encontrado.");
+            existing.Kilos = detail.Kilos.ToString();
+
+            // 4️⃣ Si cambió el cultivo, actualizar la referencia
             if (dto.CultiveId != existing.CultiveId)
             {
-                var cultiveNew = await _cultiveRepo.GetByIdAsync(dto.CultiveId)
-                                 ?? throw new KeyNotFoundException($"Cultive {dto.CultiveId} no encontrado.");
+                // (opcional) podrías validar que exista el nuevo Cultive
                 existing.CultiveId = dto.CultiveId;
             }
 
+            // 5️⃣ Actualizar rangos de fecha
             existing.FechaInicio = dto.FechaInicio;
             existing.FechaFin = dto.FechaFin;
 
+            // 6️⃣ Parsear kilos y recalcular kilos ajustados
             if (!decimal.TryParse(existing.Kilos, out var kilosVal))
                 throw new InvalidOperationException($"Kilos inválidos: {existing.Kilos}");
 
-            var cultiveForCalc = await _cultiveRepo.GetByIdAsync(existing.CultiveId);
-            existing.KilosAjustados = (kilosVal * (decimal)cultiveForCalc.Superficie).ToString();
+            var cultive = await _cultiveRepo.GetByIdAsync(existing.CultiveId)
+                          ?? throw new KeyNotFoundException($"Cultive {existing.CultiveId} no encontrado.");
+            existing.KilosAjustados = (kilosVal * (decimal)cultive.Superficie).ToString();
 
+            // 7️⃣ Guardar y loggear
             var updated = await _productionRepo.UpdateAsync(existing);
             _logger.LogInformation("Actualizada CultiveProduction {Id}.", updated.Id);
 
+            // 8️⃣ Recalcular el estimado en el cultivo padre
             await RecalculateAndSaveCultiveEstimadaAsync(updated.CultiveId);
+
+            // 9️⃣ Devolver el DTO
             return _mapper.Map<CultiveProductionDto>(updated);
         }
+
 
         public async Task<bool> DeleteAsync(int id)
         {
