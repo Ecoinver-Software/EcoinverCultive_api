@@ -257,15 +257,25 @@ public class ErpDataService
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-       SELECT
+SELECT
     DATE_SUB(e.AEN_fecha, INTERVAL WEEKDAY(e.AEN_fecha) DAY) AS SemanaInicio,
     DATE_ADD(DATE_SUB(e.AEN_fecha, INTERVAL WEEKDAY(e.AEN_fecha) DAY), INTERVAL 6 DAY) AS SemanaFin,
-    c.CUL_IdCultivo,
-    c.CUL_IdAgriCultivo,
-    a.AGR_Nombre AS NombreAgricultor,
-    c.CUL_IdGenero,
-    c.CUL_Superficie,
-    SUM(l.AEL_kilosnetos) AS TotalKilosNetos
+    
+    -- Añado campos necesarios para el código C#, usando MAX para obtener un valor representativo
+    MAX(c.CUL_IdCultivo) AS CUL_IdCultivo,
+    MAX(c.CUL_IdAgriCultivo) AS CUL_IdAgriCultivo,
+    MAX(a.AGR_Nombre) AS NombreAgricultor,
+    @idGenero AS CUL_IdGenero,
+    SUM(c.CUL_Superficie) AS CUL_Superficie,
+    
+    -- Métricas agregadas
+    SUM(l.AEL_kilosnetos) AS TotalKilosNetos,
+    NULL AS kilosM2,
+    
+    -- Estadísticas adicionales 
+    COUNT(DISTINCT c.CUL_IdCultivo) AS NumeroCultivos,
+    COUNT(DISTINCT c.CUL_IdAgriCultivo) AS NumeroAgricultores,
+    COUNT(DISTINCT l.AEL_idalbaran) AS NumeroAlbaranes
 FROM cultivos AS c
 LEFT JOIN fincas AS f
     ON c.CUL_IdFinca = f.FIN_IdFinca
@@ -296,12 +306,7 @@ WHERE
     AND l.AEL_idgenero = @idGenero
 GROUP BY
     SemanaInicio,
-    SemanaFin,
-    c.CUL_IdCultivo,
-    c.CUL_IdAgriCultivo,
-    a.AGR_Nombre,
-    c.CUL_IdGenero,
-    c.CUL_Superficie
+    SemanaFin
 ORDER BY
     SemanaInicio;
 
