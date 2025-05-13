@@ -23,7 +23,8 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public DbSet<Client> Clients { get; set; }
     public DbSet<Gender> Gender { get; set; }
     public DbSet<CultiveDataReal> CultiveProductionReal { get; set; }
-
+    public DbSet<ControlStock> ControlStocks { get; set; }
+    public DbSet<ControlStockDetails> ControlStockDetails { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Llamar al base para no romper la configuración 

@@ -11,6 +11,9 @@
         // Navegación inversa 1:N
         public virtual ICollection<CultivePlanning> CultivePlannings { get; set; }
             = new List<CultivePlanning>();
+
+        // Propiedad de navegación para la relación uno a muchos
+        public virtual ICollection<ControlStockDetails> ControlStockDetails { get; set; }
     }
 
 }

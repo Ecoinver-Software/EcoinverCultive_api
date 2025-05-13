@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcoinverGMAO_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513090354_CambioDeNombre")]
+    partial class CambioDeNombre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,8 +225,6 @@ namespace EcoinverGMAO_api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdControl");
-
-                    b.HasIndex("IdGenero");
 
                     b.ToTable("ControlStockDetails");
                 });
@@ -863,15 +864,7 @@ namespace EcoinverGMAO_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EcoinverGMAO_api.Models.Entities.Gender", "Gender")
-                        .WithMany("ControlStockDetails")
-                        .HasForeignKey("IdGenero")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ControlStock");
-
-                    b.Navigation("Gender");
                 });
 
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanning", b =>
@@ -1018,8 +1011,6 @@ namespace EcoinverGMAO_api.Migrations
 
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Gender", b =>
                 {
-                    b.Navigation("ControlStockDetails");
-
                     b.Navigation("CultivePlannings");
                 });
 #pragma warning restore 612, 618
