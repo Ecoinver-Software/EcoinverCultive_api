@@ -83,7 +83,7 @@ namespace EcoinverGMAO_api.Controllers
             _context.ControlStocks.Add(controlStock);
             await _context.SaveChangesAsync();
 
-            return Ok("Creado correctamenete");
+            return Ok(new {message= "Creado correctamenete" });
         }
 
         // DELETE: api/ControlStock/5
@@ -99,7 +99,7 @@ namespace EcoinverGMAO_api.Controllers
             _context.ControlStocks.Remove(controlStock);
             await _context.SaveChangesAsync();
 
-            return Ok("Se ha eliminado correctamente");
+            return Ok(new { message = "Se ha eliminado correctamente" });
         }
 
       
