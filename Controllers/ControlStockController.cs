@@ -25,9 +25,15 @@ namespace EcoinverGMAO_api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetControlStocks()
         {
-            var controlStock = await _context.ControlStocks.ToListAsync();
-            
-            
+            var controlStock = await _context.ControlStocks
+    .Select(x => new
+    {
+        x.Id,
+        x.Fecha
+    })
+    .ToListAsync();
+
+
             return Ok(controlStock);
         }
 
@@ -56,7 +62,7 @@ namespace EcoinverGMAO_api.Controllers
             }
 
             buscarControl.Fecha = controlStockDto.Fecha;
-            buscarControl.FechaHora = controlStockDto.FechaHora;
+          
            
             await _context.SaveChangesAsync();
 
@@ -70,7 +76,7 @@ namespace EcoinverGMAO_api.Controllers
             var controlStock = new ControlStock
             {
                 Fecha = controlStockdDto.Fecha,
-                FechaHora = controlStockdDto.FechaHora,
+              
                 
             };
 

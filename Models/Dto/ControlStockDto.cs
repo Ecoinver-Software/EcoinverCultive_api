@@ -4,7 +4,7 @@
     {
        
         public DateTime Fecha { get; set; }
-        public DateTime FechaHora { get; set; }
+        
 
        
     }
