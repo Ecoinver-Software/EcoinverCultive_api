@@ -7,8 +7,8 @@ namespace EcoinverGMAO_api.Models
     {
         public int numBultos { get; set; }
         public int CodigoPartida { get; set; }
-        public int IdGenero { get; set; }
-        public string Categoria { get; set; }
+        public int? IdGenero { get; set; }
+        public string? Categoria { get; set; }
 
         // Clave foránea hacia ControlStock
         public int IdControl { get; set; }
@@ -17,8 +17,6 @@ namespace EcoinverGMAO_api.Models
         [ForeignKey("IdControl")]
         public virtual ControlStock ControlStock { get; set; }
 
-        // Propiedad de navegación
-        [ForeignKey("IdGenero")]
-        public virtual Gender Gender { get; set; }
+       
     }
 }

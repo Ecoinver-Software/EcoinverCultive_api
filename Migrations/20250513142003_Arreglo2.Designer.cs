@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcoinverGMAO_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513142003_Arreglo2")]
+    partial class Arreglo2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,6 +192,7 @@ namespace EcoinverGMAO_api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Categoria")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("CodigoPartida")
@@ -203,7 +207,7 @@ namespace EcoinverGMAO_api.Migrations
                     b.Property<int>("IdControl")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdGenero")
+                    b.Property<int>("IdGenero")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
