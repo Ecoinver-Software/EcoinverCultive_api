@@ -344,6 +344,37 @@ ORDER BY
         return resultados;
     }
 
+    // 2) Servicio (ErpDataService.cs)
+    public List<ControlStockDetailsDto> GetPaletPorPartida(int idPartida)
+    {
+        var resultado = new List<ControlStockDetailsDto>();
+
+        using var conn = new MySqlConnection(_netagroConnectionString);
+        conn.Open();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+        SELECT
+            categoriasentrada.CAE_categoriacalibre AS Categoria,
+            albentrada_lineas.AEL_idgenero    AS IdGenero
+        FROM albentrada_lineas
+        LEFT JOIN categoriasentrada ON albentrada_lineas.AEL_idcategoria = categoriasentrada.CAE_id
+        WHERE AEL_muestreo = @idPartida;
+    ";
+        cmd.Parameters.AddWithValue("@idPartida", idPartida);
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            resultado.Add(new ControlStockDetailsDto
+            {
+                IdGenero = reader.GetInt32("IdGenero"),
+                Categoria = reader.GetString("Categoria"),
+            });
+        }
+
+        return resultado;
+    }
 
 
 }
