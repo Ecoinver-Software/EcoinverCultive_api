@@ -9,7 +9,7 @@ namespace EcoinverGMAO_api.Models
         public int CodigoPartida { get; set; }
         public int? IdGenero { get; set; }
         public string? Categoria { get; set; }
-
+        public DateTime? FechaCreacion { get; set; } = DateTime.Now;   
         // Clave foránea hacia ControlStock
         public int IdControl { get; set; }
 

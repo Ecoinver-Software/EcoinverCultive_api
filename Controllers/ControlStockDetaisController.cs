@@ -35,7 +35,8 @@ namespace EcoinverGMAO_api.Controllers
         CodigoPartida = x.CodigoPartida,
         IdGenero = x.IdGenero,
         Categoria = x.Categoria,
-        idControl = x.IdControl
+        idControl = x.IdControl,
+        FechaCreacion = (DateTime)x.FechaCreacion
     })
     .ToListAsync();
 
@@ -65,7 +66,7 @@ namespace EcoinverGMAO_api.Controllers
 
             if (buscarControl == null)
             {
-                return NotFound("No se ha encontrado el registro");
+                return NotFound(new { message="No se ha encontrado el registro" });
             }
 
             buscarControl.numBultos = controlStockDto.NumBultos;
@@ -73,9 +74,10 @@ namespace EcoinverGMAO_api.Controllers
             buscarControl.IdGenero = controlStockDto.IdGenero;
             buscarControl.Categoria = controlStockDto.Categoria;
             buscarControl.IdControl = controlStockDto.idControl;
+            buscarControl.FechaCreacion = controlStockDto.FechaCreacion;
             await _context.SaveChangesAsync();
 
-            return Ok("Se ha actualizado correctamente");
+            return Ok(new { message="Se ha actualizado correctamente" });
         }
 
         // POST: api/ControlStockDetails
@@ -88,13 +90,14 @@ namespace EcoinverGMAO_api.Controllers
                 CodigoPartida = controlStockdDto.CodigoPartida,
                 IdGenero= controlStockdDto.IdGenero,
                 Categoria=controlStockdDto.Categoria,
-                IdControl= controlStockdDto.idControl
+                IdControl= controlStockdDto.idControl,
+                FechaCreacion=controlStockdDto.FechaCreacion
             };
 
             _context.ControlStockDetails.Add(controlStock);
             await _context.SaveChangesAsync();
 
-            return Ok("Creado correctamenete");
+            return Ok(new {message="Creado correctamenete" });
         }
 
         // DELETE: api/ControlStockDetails/5
@@ -110,7 +113,7 @@ namespace EcoinverGMAO_api.Controllers
             _context.ControlStockDetails.Remove(controlStock);
             await _context.SaveChangesAsync();
 
-            return Ok("Se ha eliminado correctamente");
+            return Ok(new {message= "Se ha eliminado correctamente" });
         }
 
 

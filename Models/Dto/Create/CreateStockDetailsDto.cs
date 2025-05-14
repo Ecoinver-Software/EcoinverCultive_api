@@ -7,5 +7,6 @@
         public int IdGenero { get; set; }
         public string Categoria { get; set; }
         public int idControl { get; set; }
+        public DateTime FechaCreacion { get; set; } 
     }
 }
