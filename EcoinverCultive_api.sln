@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoinverGMAO_api", "EcoinverGMAO_api.csproj", "{07A55E77-3B3D-45E5-AC02-FD0EF2EA655C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoinverCultive_api", "EcoinverCultive_api.csproj", "{07A55E77-3B3D-45E5-AC02-FD0EF2EA655C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
