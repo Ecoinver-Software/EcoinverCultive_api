@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using EcoinverCultive_api.Models;
 using EcoinverGMAO_api.Models;
 using EcoinverGMAO_api.Models.Entities;
 using EcoinverGMAO_api.Models.Identity;
@@ -25,6 +26,7 @@ public class AppDbContext : IdentityDbContext<User, Role, string>
     public DbSet<CultiveDataReal> CultiveProductionReal { get; set; }
     public DbSet<ControlStock> ControlStocks { get; set; }
     public DbSet<ControlStockDetails> ControlStockDetails { get; set; }
+    public DbSet<Variable> Variable { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Llamar al base para no romper la configuración 
