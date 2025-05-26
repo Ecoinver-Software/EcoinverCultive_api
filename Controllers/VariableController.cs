@@ -53,7 +53,7 @@ namespace EcoinverCultive_api.Controllers
                 Valor = createDto.Valor
             };
             _context.Variable.AddAsync(variable);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); 
             return Ok(variable);
 
         }
