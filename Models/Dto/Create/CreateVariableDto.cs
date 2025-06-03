@@ -6,6 +6,7 @@
         public int IdCultivo { get; set; }
         public DateTime FechaRegistro { get; set; }
         public float Valor { get; set; }
+        public string Categoria { get; set; }
         
     }
 }

@@ -25,7 +25,8 @@ namespace EcoinverCultive_api.Controllers
                 x.Name,
                 x.IdCultivo,
                 x.FechaRegistro,
-                x.Valor
+                x.Valor,
+                x.Categoria,
 
             }).ToListAsync();
 
@@ -50,7 +51,8 @@ namespace EcoinverCultive_api.Controllers
                 Name = createDto.Name,
                 IdCultivo = createDto.IdCultivo,
                 FechaRegistro = createDto.FechaRegistro,
-                Valor = createDto.Valor
+                Valor = createDto.Valor,
+                Categoria = createDto.Categoria,
             };
             _context.Variable.AddAsync(variable);
             await _context.SaveChangesAsync(); 
@@ -70,6 +72,8 @@ namespace EcoinverCultive_api.Controllers
             variable.Name = dto.Name;
             variable.Valor = dto.Valor;
             variable.FechaRegistro = dto.FechaRegistro;
+            variable.Categoria = dto.Categoria;
+
             await _context.SaveChangesAsync();
             return Ok(variable);
 
@@ -84,7 +88,7 @@ namespace EcoinverCultive_api.Controllers
 
             _context.Variable.Remove(variable);
             await _context.SaveChangesAsync();
-            return Ok(new {message="Se ha eliminado correctamente la variable"});
+            return Ok(variable);
         }
     }
 

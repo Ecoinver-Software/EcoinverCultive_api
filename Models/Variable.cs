@@ -12,6 +12,7 @@ namespace EcoinverCultive_api.Models
         public Cultive Cultivo { get; set; }
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
         public float Valor { get; set; }
+        public string Categoria { get; set; }
 
     }
 }
