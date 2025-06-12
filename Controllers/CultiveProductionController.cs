@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EcoinverGMAO_api.Models.Dto;
 using EcoinverGMAO_api.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace EcoinverGMAO_api.Controllers
 {
@@ -11,10 +13,11 @@ namespace EcoinverGMAO_api.Controllers
     public class CultiveProductionController : ControllerBase
     {
         private readonly ICultiveProductionService _cultiveProductionService;
-
-        public CultiveProductionController(ICultiveProductionService cultiveProductionService)
+        private readonly AppDbContext _context;
+        public CultiveProductionController(ICultiveProductionService cultiveProductionService,AppDbContext context)
         {
             _cultiveProductionService = cultiveProductionService;
+            _context = context;
         }
 
         // GET: api/cultiveProductions
@@ -61,6 +64,24 @@ namespace EcoinverGMAO_api.Controllers
             if (!result)
                 return NotFound(new { message = "CultiveProduction not found." });
             return NoContent();
+        }
+        // PATCH: api/cultiveProductions/{id}/kilosAjustados/{value}
+        [HttpPatch("{id}/{value:decimal}")]
+        public async Task<IActionResult> UpdateKilosAjustados(int id, decimal value)
+        {
+            // Buscar la entidad
+            var cultiveProduction = await _context.CultivesProduction.FindAsync(id);
+            if (cultiveProduction == null)
+                return NotFound(new { message = "CultiveProduction not found." });
+
+            // Actualizar solo el campo kilosAjustados
+            cultiveProduction.KilosAjustados = value.ToString();
+
+            // Guardar los cambios
+            await _context.SaveChangesAsync();
+
+            // Devolver la entidad actualizada
+            return Ok(cultiveProduction);
         }
     }
 }

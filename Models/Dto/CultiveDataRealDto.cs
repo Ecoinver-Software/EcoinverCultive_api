@@ -11,6 +11,9 @@
         public double? Superficie { get; set; }
         public double? KilosNetos { get; set; }
         public double? KilosM2 { get; set; }
+        public DateTime? FechaInicio { get; set; }
+
+        public DateTime? FechaFin {  get; set; }
 
 
     }

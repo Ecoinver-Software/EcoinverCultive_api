@@ -11,6 +11,8 @@
         // Navegación inversa 1:N
         public virtual ICollection<CultivePlanning> CultivePlannings { get; set; }
             = new List<CultivePlanning>();
+
+       
     }
 
 }
