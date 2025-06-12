@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EcoinverGMAO_api.Migrations
+namespace EcoinverCultive_api.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -146,6 +146,24 @@ namespace EcoinverGMAO_api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ControlStocks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Fecha = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ControlStocks", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -385,6 +403,36 @@ namespace EcoinverGMAO_api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "ControlStockDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    numBultos = table.Column<int>(type: "int", nullable: false),
+                    CodigoPartida = table.Column<int>(type: "int", nullable: false),
+                    IdGenero = table.Column<int>(type: "int", nullable: true),
+                    Categoria = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    IdControl = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ControlStockDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ControlStockDetails_ControlStocks_IdControl",
+                        column: x => x.IdControl,
+                        principalTable: "ControlStocks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "CultivesPlanning",
                 columns: table => new
                 {
@@ -519,6 +567,36 @@ namespace EcoinverGMAO_api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Variable",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IdCultivo = table.Column<int>(type: "int", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Valor = table.Column<float>(type: "float", nullable: false),
+                    Categoria = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Variable", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Variable_Cultives_IdCultivo",
+                        column: x => x.IdCultivo,
+                        principalTable: "Cultives",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "CultivesProduction",
                 columns: table => new
                 {
@@ -608,6 +686,11 @@ namespace EcoinverGMAO_api.Migrations
                 column: "IdCommercialNeedsPlanning");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ControlStockDetails_IdControl",
+                table: "ControlStockDetails",
+                column: "IdControl");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cultives_IdCultivePlanning",
                 table: "Cultives",
                 column: "IdCultivePlanning");
@@ -631,6 +714,11 @@ namespace EcoinverGMAO_api.Migrations
                 name: "IX_CultivesProduction_CultivePlanningDetailsId",
                 table: "CultivesProduction",
                 column: "CultivePlanningDetailsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Variable_IdCultivo",
+                table: "Variable",
+                column: "IdCultivo");
         }
 
         /// <inheritdoc />
@@ -661,10 +749,16 @@ namespace EcoinverGMAO_api.Migrations
                 name: "CommercialNeedsPlanningDetails");
 
             migrationBuilder.DropTable(
+                name: "ControlStockDetails");
+
+            migrationBuilder.DropTable(
                 name: "CultiveProductionReal");
 
             migrationBuilder.DropTable(
                 name: "CultivesProduction");
+
+            migrationBuilder.DropTable(
+                name: "Variable");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -677,6 +771,9 @@ namespace EcoinverGMAO_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "CommercialNeedsPlanning");
+
+            migrationBuilder.DropTable(
+                name: "ControlStocks");
 
             migrationBuilder.DropTable(
                 name: "CultivesPlanningDetails");
