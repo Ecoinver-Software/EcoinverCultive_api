@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcoinverGMAO_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250402145707_AddCommercialNeedForeignKey")]
-    partial class AddCommercialNeedForeignKey
+    [Migration("20250611070632_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,46 @@ namespace EcoinverGMAO_api.Migrations
                     b.ToTable("CommercialNeedsPlanning");
                 });
 
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanningDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaDesde")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaHasta")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("IdCommercialNeedsPlanning")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<double?>("Kilos")
+                        .HasColumnType("double");
+
+                    b.Property<int>("NumeroSemana")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCommercialNeedsPlanning");
+
+                    b.ToTable("CommercialNeedsPlanningDetails");
+                });
+
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Cultive", b =>
                 {
                     b.Property<int>("Id")
@@ -248,6 +288,9 @@ namespace EcoinverGMAO_api.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<int?>("IdAgricultor")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdCultivePlanning")
                         .HasColumnType("int");
 
                     b.Property<int>("IdCultivo")
@@ -296,6 +339,64 @@ namespace EcoinverGMAO_api.Migrations
                     b.Property<double?>("ProduccionEstimada")
                         .HasColumnType("double");
 
+                    b.Property<string>("Provincia")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<double?>("Superficie")
+                        .HasColumnType("double");
+
+                    b.Property<string>("Tecnico")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCultivePlanning");
+
+                    b.ToTable("Cultives");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultiveDataReal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("IdAgricultor")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdCultivo")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdFinca")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdGenero")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<double?>("KilosM2")
+                        .HasColumnType("double");
+
+                    b.Property<double?>("KilosNetos")
+                        .HasColumnType("double");
+
+                    b.Property<string>("NombreAgricultor")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<double?>("Superficie")
                         .HasColumnType("double");
 
@@ -304,7 +405,133 @@ namespace EcoinverGMAO_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cultives");
+                    b.ToTable("CultiveProductionReal");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultivePlanning", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaFin")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaInicio")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("IdGenero")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdGenero")
+                        .HasDatabaseName("IX_CultivesPlanning_IdGenero");
+
+                    b.ToTable("CultivesPlanning");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultivePlanningDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CultivePlanningId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaFin")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaInicio")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<double?>("Kilos")
+                        .HasColumnType("double");
+
+                    b.Property<int>("Tramo")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CultivePlanningId");
+
+                    b.ToTable("CultivesPlanningDetails");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultiveProduction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CultiveId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CultivePlanningDetailsId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaFin")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaInicio")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Kilos")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("KilosAjustados")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CultiveId");
+
+                    b.HasIndex("CultivePlanningDetailsId");
+
+                    b.ToTable("CultivesProduction");
                 });
 
             modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Gender", b =>
@@ -570,6 +797,66 @@ namespace EcoinverGMAO_api.Migrations
                     b.Navigation("CommercialNeed");
                 });
 
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanningDetails", b =>
+                {
+                    b.HasOne("EcoinverGMAO_api.Models.Entities.CommercialNeedsPlanning", "CommercialNeedsPlanning")
+                        .WithMany()
+                        .HasForeignKey("IdCommercialNeedsPlanning")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommercialNeedsPlanning");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Cultive", b =>
+                {
+                    b.HasOne("EcoinverGMAO_api.Models.Entities.CultivePlanning", "CultivePlanning")
+                        .WithMany()
+                        .HasForeignKey("IdCultivePlanning");
+
+                    b.Navigation("CultivePlanning");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultivePlanning", b =>
+                {
+                    b.HasOne("EcoinverGMAO_api.Models.Entities.Gender", "Genero")
+                        .WithMany("CultivePlannings")
+                        .HasForeignKey("IdGenero")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Genero");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultivePlanningDetails", b =>
+                {
+                    b.HasOne("EcoinverGMAO_api.Models.Entities.CultivePlanning", "CultivePlanning")
+                        .WithMany("CultivePlanningDetails")
+                        .HasForeignKey("CultivePlanningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CultivePlanning");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultiveProduction", b =>
+                {
+                    b.HasOne("EcoinverGMAO_api.Models.Entities.Cultive", "Cultive")
+                        .WithMany("Productions")
+                        .HasForeignKey("CultiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcoinverGMAO_api.Models.Entities.CultivePlanningDetails", "CultivePlanningDetails")
+                        .WithMany()
+                        .HasForeignKey("CultivePlanningDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cultive");
+
+                    b.Navigation("CultivePlanningDetails");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("EcoinverGMAO_api.Models.Identity.Role", null)
@@ -624,6 +911,21 @@ namespace EcoinverGMAO_api.Migrations
             modelBuilder.Entity("EcoinverGMAO_api.Models.CommercialNeeds", b =>
                 {
                     b.Navigation("CommercialNeedsPlannings");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Cultive", b =>
+                {
+                    b.Navigation("Productions");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.CultivePlanning", b =>
+                {
+                    b.Navigation("CultivePlanningDetails");
+                });
+
+            modelBuilder.Entity("EcoinverGMAO_api.Models.Entities.Gender", b =>
+                {
+                    b.Navigation("CultivePlannings");
                 });
 #pragma warning restore 612, 618
         }

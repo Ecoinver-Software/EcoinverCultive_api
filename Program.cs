@@ -108,7 +108,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularDev", policy =>
     {
         policy.WithOrigins("http://localhost:4200",
-                           "http://172.16.60.254:5000"
+                           "https://172.16.60.254",
+                           "http://172.16.60.254"
                            )
               .AllowAnyHeader()
               .AllowAnyMethod();
@@ -133,6 +134,19 @@ using (var scope = app.Services.CreateScope())
 
 // 3) Middlewares y configuración del pipeline
 
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync($"{{\"error\": \"{ex.Message}\"}}");
+    }
+});
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -152,5 +166,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 // 4) Run
-app.Run("http://0.0.0.0:80");
+app.Run("http://0.0.0.0:5000");
 
