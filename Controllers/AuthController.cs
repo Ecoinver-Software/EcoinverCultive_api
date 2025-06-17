@@ -1,4 +1,5 @@
-﻿using EcoinverGMAO_api.Models.Dto;
+﻿using EcoinverCultive_api.Models.Dto;
+using EcoinverGMAO_api.Models.Dto;
 using EcoinverGMAO_api.Services;
 using EcoinverGMAO_api.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -39,4 +40,24 @@ public class AuthController : ControllerBase
             return StatusCode(500, new { message = ex.Message });
         }
     }
+
+    //autologin para pasar del hub al cultive el usuario iniciado sesion:
+    [HttpPost("auto-login")]
+    public async Task<IActionResult> AutoLogin([FromBody] AutoLoginDto dto)
+    {
+        try
+        {
+            var response = await _authService.AutoLoginAsync(dto.Username, dto.Email);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error en auto-login");
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+
+
+
+
 }

@@ -11,9 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) Registro de servicios y configuración de dependencias
+// 1) Registro de servicios y configuraciï¿½n de dependencias
 
-// Repositorios genéricos y servicios
+// Repositorios genï¿½ricos y servicios
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
@@ -32,7 +32,7 @@ builder.Services.AddScoped<ICommercialNeedsPlanningDetailsService, CommercialNee
 // Servicio para leer la base del ERP por ADO.NET
 builder.Services.AddTransient<ErpDataService>();
 
-// DbContext principal de tu aplicación con MySQL (Pomelo)
+// DbContext principal de tu aplicaciï¿½n con MySQL (Pomelo)
 builder.Services.AddDbContext<AppDbContext>(o =>
 {
     o.UseMySql(
@@ -47,7 +47,7 @@ builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Opciones de Identity (contraseñas, etc.)
+// Opciones de Identity (contraseï¿½as, etc.)
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequiredLength = 4;
@@ -94,7 +94,7 @@ builder.Services.AddAutoMapper(typeof(GenderProfile));
 builder.Services.AddAutoMapper(typeof(CommercialNeedsPlanningProfile));
 builder.Services.AddAutoMapper(typeof(CommercialNeedsPlanningDetailsProfile));
 
-// Autorización
+// Autorizaciï¿½n
 builder.Services.AddAuthorization();
 
 // Controladores y Swagger
@@ -107,10 +107,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev", policy =>
     {
+
         policy.WithOrigins("http://localhost:4200",
                            "https://172.16.60.254",
                            "http://172.16.60.254"
                            )
+
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -132,7 +134,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// 3) Middlewares y configuración del pipeline
+// 3) Middlewares y configuraciï¿½n del pipeline
 
 app.Use(async (context, next) =>
 {
@@ -159,7 +161,7 @@ app.UseHttpsRedirection();
 // Usar CORS
 app.UseCors("AllowAngularDev");
 
-// **Importante**: primero autenticación, luego autorización
+// **Importante**: primero autenticaciï¿½n, luego autorizaciï¿½n
 app.UseAuthentication();
 app.UseAuthorization();
 
