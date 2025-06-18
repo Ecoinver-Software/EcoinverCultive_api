@@ -13,10 +13,12 @@ namespace EcoinverGMAO_api.Controllers
     public class CultiveController : ControllerBase
     {
         private readonly ICultiveService _cultiveService;
-
-        public CultiveController(ICultiveService cultiveService)
+        
+        
+        public CultiveController(ICultiveService cultiveService,AppDbContext context)
         {
             _cultiveService = cultiveService;
+            
         }
 
         // GET: api/cultives
@@ -50,5 +52,17 @@ namespace EcoinverGMAO_api.Controllers
 
             return Ok(updated);
         }
+
+        
+        [HttpPatch("{id}/prod")]
+        public async Task<IActionResult> UpdateProduccion(int id, [FromBody] double kilosAjustados)
+        {
+            var updated = await _cultiveService.UpdateProduccionEstimadaAsync(id, kilosAjustados);
+            if (updated == null)
+                return NotFound(new { message = "Cultive not found." });
+
+            return Ok(updated);
+        }
+
     }
 }
