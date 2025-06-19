@@ -42,20 +42,20 @@ public class AuthController : ControllerBase
     }
 
     //autologin para pasar del hub al cultive el usuario iniciado sesion:
-    [HttpPost("auto-login")]
-    public async Task<IActionResult> AutoLogin([FromBody] AutoLoginDto dto)
-    {
-        try
-        {
-            var response = await _authService.AutoLoginAsync(dto.Username, dto.Email);
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error en auto-login");
-            return StatusCode(500, new { message = ex.Message });
-        }
-    }
+    //[HttpPost("auto-login")]
+    //public async Task<IActionResult> AutoLogin([FromBody] AutoLoginDto dto)
+    //{
+    //    try
+    //    {
+    //        var response = await _authService.AutoLoginAsync(dto.Username, dto.Email);
+    //        return Ok(response);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError(ex, "Error en auto-login");
+    //        return StatusCode(500, new { message = ex.Message });
+    //    }
+    //}
 
 
 
