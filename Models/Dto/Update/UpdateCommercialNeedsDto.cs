@@ -13,6 +13,7 @@ namespace EcoinverGMAO_api.Models.Dto
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public decimal? Kgs { get; set; }
+        public string NombreUsuario { get; set; }
 
         // Campos para el género (se usan tipos anulables si quieres que sean opcionales)
         public int? IdGenero { get; set; }
