@@ -1,4 +1,5 @@
 using System.Text;
+using EcoinverCultive_api.Services;
 using EcoinverGMAO_api.Data;
 using EcoinverGMAO_api.Models.Identity;
 using EcoinverGMAO_api.Profiles;
@@ -28,6 +29,9 @@ builder.Services.AddScoped<ICultiveProductionService, CultiveProductionService>(
 builder.Services.AddScoped<IGenderService, GenderService>();
 builder.Services.AddScoped<ICommercialNeedsPlanningService, CommercialNeedsPlanningService>();
 builder.Services.AddScoped<ICommercialNeedsPlanningDetailsService, CommercialNeedsPlanningDetailsService>();
+
+// Registro de TokenUserService
+builder.Services.AddScoped<ITokenUserService, TokenUserService>();
 
 // Servicio para leer la base del ERP por ADO.NET
 builder.Services.AddTransient<ErpDataService>();

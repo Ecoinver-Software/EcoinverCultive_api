@@ -22,6 +22,8 @@ namespace EcoinverGMAO_api.Models
         [Required]
         public decimal Kgs { get; set; }
 
+        public string NombreUsuario { get; set; }
+
         // Agregar la propiedad que actúa como llave foránea (FK)
         [Required]
         public int IdGenero { get; set; }

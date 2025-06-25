@@ -11,6 +11,8 @@ namespace EcoinverGMAO_api.Models.Dto
         [Required(ErrorMessage = "El nombre del cliente es obligatorio.")]
         [MaxLength(200)]
         public string ClientName { get; set; }
+         
+        public string NombreUsuario { get; set; }
 
         [Required(ErrorMessage = "La fecha de inicio es obligatoria.")]
         public DateTime StartDate { get; set; }

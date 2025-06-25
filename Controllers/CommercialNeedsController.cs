@@ -84,7 +84,7 @@ namespace EcoinverGMAO_api.Controllers
                 planning.StartDate = commercialNeed.StartDate;
                 planning.EndDate = commercialNeed.EndDate;
                 planning.Kgs = commercialNeed.Kgs;
-           
+                
 
                 _context.CommercialNeedsPlanning.Update(planning);
             }
