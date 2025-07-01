@@ -50,6 +50,7 @@ namespace EcoinverGMAO_api.Controllers
                 return BadRequest(ModelState);
 
             var commercialNeed = _mapper.Map<CommercialNeeds>(createDto);
+            
             _context.CommercialNeeds.Add(commercialNeed);
             await _context.SaveChangesAsync();
 
